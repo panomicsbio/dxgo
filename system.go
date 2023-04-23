@@ -6,5 +6,7 @@ func (c *DXClient) findDataObjects() {
 		println(err)
 		return
 	}
+	println("----------")
 	println(string(data))
+	println("----------")
 }
