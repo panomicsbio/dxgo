@@ -1,12 +1,16 @@
 package dxgo
 
-func (c *DXClient) FindDataObjects() {
-	data, err := c.retryableRequest("/system/findDataObjects", struct{}{})
+import "encoding/json"
+
+func (c *DXClient) FindDataObjects(input *FindDataObjectsInput) (*FindDataObjectsOutput, error) {
+	data, err := c.retryableRequest("/system/findDataObjects", input)
 	if err != nil {
-		println(err.Error())
-		return
+		return nil, err
 	}
-	println("----------")
-	println(string(data))
-	println("----------")
+	output := new(FindDataObjectsOutput)
+	err = json.Unmarshal(data, output)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
 }
