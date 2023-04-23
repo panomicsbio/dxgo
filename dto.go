@@ -10,6 +10,11 @@ type ProjectDescribeOutput struct {
 	Folders []string `json:"folders"`
 }
 
+type ProjectNewFolderInput struct {
+	ID     string `json:"id"`
+	Folder string `json:"folder"`
+}
+
 type DXAssetType string
 
 type FindDataObjectsScope struct {
