@@ -50,7 +50,7 @@ func NewClientWithConfig(config *DXClientConfig) *DXClient {
 }
 
 func (c *DXClient) getBaseEndpoint() string {
-	return fmt.Sprintf("%://%s:%s", c.config.ApiServerProtocol, c.config.ApiServerHost, c.config.ApiServerPort)
+	return fmt.Sprintf("%s://%s:%s", c.config.ApiServerProtocol, c.config.ApiServerHost, c.config.ApiServerPort)
 }
 
 type RetryAfterError struct {
