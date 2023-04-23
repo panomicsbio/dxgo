@@ -1,4 +1,4 @@
-module dxgo
+module github.com/panomicsbio/dxgo
 
 go 1.20
 
