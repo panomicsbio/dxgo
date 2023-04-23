@@ -6,7 +6,7 @@ import (
 )
 
 func (c *DXClient) ProjectDescribe(input *ProjectDescribeInput) (*ProjectDescribeOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/project-%s/describe", input.ID), input)
+	data, err := c.retryableRequest(fmt.Sprintf("/%s/describe", input.ID), input)
 	if err != nil {
 		return nil, err
 	}
