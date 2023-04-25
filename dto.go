@@ -39,3 +39,21 @@ type FindDataObjectsOutput struct {
 	Results []*FindDataObjectsResult `json:"results"`
 	Next    map[string]interface{}   `json:"next"`
 }
+
+type SystemRequirements struct {
+	InstanceType string `json:"instanceType"`
+}
+
+type AppletRunInput struct {
+	ID                 string              `json:"id"`
+	Project            string              `json:"project"`
+	SystemRequirements *SystemRequirements `json:"systemRequirements"`
+}
+
+type AppletRunOutput struct {
+	ID string `json:"id"`
+}
+
+type JobTerminateInput struct {
+	ID string `json:"id"`
+}
