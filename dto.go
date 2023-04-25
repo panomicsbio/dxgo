@@ -57,3 +57,11 @@ type AppletRunOutput struct {
 type JobTerminateInput struct {
 	ID string `json:"id"`
 }
+
+type JobDescribeInput struct {
+	ID string `json:"id"`
+}
+
+type JobDescribeOutput struct {
+	State string `json:"state"`
+}
