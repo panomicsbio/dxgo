@@ -27,7 +27,7 @@ type FindDataObjectsInput struct {
 	Class    DXAssetType            `json:"class"`
 	Scope    *FindDataObjectsScope  `json:"scope"`
 	Describe bool                   `json:"describe"`
-	Starting map[string]interface{} `json:"starting"`
+	Starting map[string]interface{} `json:"starting,omitempty"`
 }
 
 type FindDataObjectsResult struct {
