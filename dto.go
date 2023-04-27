@@ -49,6 +49,7 @@ type AppletRunInput struct {
 	ID                 string              `json:"id"`
 	Project            string              `json:"project"`
 	SystemRequirements *SystemRequirements `json:"systemRequirements"`
+	Properties         map[string]string   `json:"properties"`
 }
 
 type AppletRunOutput struct {
