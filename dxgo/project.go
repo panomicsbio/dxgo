@@ -25,3 +25,19 @@ func (c *DXClient) ProjectNewFolder(input *ProjectNewFolderInput) error {
 	}
 	return nil
 }
+
+func (c *DXClient) RemoveObjects(input *RemoveObjectsInput) error {
+	_, err := c.retryableRequest(fmt.Sprintf("/%s/removeObjects", input.Project), input)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *DXClient) RemoveFolder(input *RemoveFolderInput) error {
+	_, err := c.retryableRequest(fmt.Sprintf("/%s/removeFolder", input.Project), input)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -82,3 +82,16 @@ type FileDownloadOutput struct {
 	URL     string            `json:"url"`
 	Headers map[string]string `json:"headers"`
 }
+
+type RemoveObjectsInput struct {
+	Project string   `json:"project"`
+	Objects []string `json:"objects"`
+	Force   bool     `json:"force"`
+}
+
+type RemoveFolderInput struct {
+	Project string `json:"project"`
+	Folder  string `json:"folder"`
+	Force   bool   `json:"force"`
+	Recurse bool   `json:"recurse"`
+}
