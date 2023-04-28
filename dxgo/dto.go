@@ -70,12 +70,12 @@ type JobDescribeOutput struct {
 }
 
 type FileDownloadInput struct {
-	ID               string `json:"id"`
-	Duration         *int   `json:"duration,omitempty"`
-	Filename         string `json:"filename"`
-	Project          string `json:"project"`
-	Preauthenticated *bool  `json:"preauthenticated,omitempty"`
-	StickyIP         *bool  `json:"stickyIP,omitempty"`
+	ID               string  `json:"id"`
+	Duration         *int    `json:"duration,omitempty"`
+	Filename         *string `json:"filename,omitempty"`
+	Project          string  `json:"project"`
+	Preauthenticated *bool   `json:"preauthenticated,omitempty"`
+	StickyIP         *bool   `json:"stickyIP,omitempty"`
 }
 
 type FileDownloadOutput struct {
