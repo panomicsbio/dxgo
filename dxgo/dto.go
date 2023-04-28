@@ -68,3 +68,17 @@ type JobDescribeInput struct {
 type JobDescribeOutput struct {
 	State string `json:"state"`
 }
+
+type FileDownloadInput struct {
+	ID               string `json:"id"`
+	Duration         *int   `json:"duration,omitempty"`
+	Filename         string `json:"filename"`
+	Project          string `json:"project"`
+	Preauthenticated *bool  `json:"preauthenticated,omitempty"`
+	StickyIP         *bool  `json:"stickyIP,omitempty"`
+}
+
+type FileDownloadOutput struct {
+	URL     string            `json:"url"`
+	Headers map[string]string `json:"headers"`
+}
