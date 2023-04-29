@@ -1,5 +1,11 @@
 package dxgo
 
+type ApiError struct {
+	Type    string            `json:"type"`
+	Message string            `json:"message"`
+	Details map[string]string `json:"details"`
+}
+
 type ProjectDescribeInput struct {
 	ID     string          `json:"id"`
 	Fields map[string]bool `json:"fields"`
@@ -52,6 +58,7 @@ type AppletRunInput struct {
 	Input              map[string]interface{} `json:"input"`
 	SystemRequirements *SystemRequirements    `json:"systemRequirements"`
 	Properties         map[string]string      `json:"properties"`
+	Error              ApiError               `json:"error"`
 }
 
 type AppletRunOutput struct {
