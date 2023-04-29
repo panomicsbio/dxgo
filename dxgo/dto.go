@@ -47,10 +47,11 @@ type SystemRequirements struct {
 }
 
 type AppletRunInput struct {
-	ID                 string              `json:"id"`
-	Project            string              `json:"project"`
-	SystemRequirements *SystemRequirements `json:"systemRequirements"`
-	Properties         map[string]string   `json:"properties"`
+	ID                 string                 `json:"id"`
+	Project            string                 `json:"project"`
+	Input              map[string]interface{} `json:"input"`
+	SystemRequirements *SystemRequirements    `json:"systemRequirements"`
+	Properties         map[string]string      `json:"properties"`
 }
 
 type AppletRunOutput struct {
