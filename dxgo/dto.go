@@ -61,8 +61,8 @@ type AppletRunInput struct {
 }
 
 type AppletRunOutput struct {
-	ID    string   `json:"id"`
-	Error ApiError `json:"error"`
+	ID    string    `json:"id"`
+	Error *ApiError `json:"error"`
 }
 
 type JobTerminateInput struct {
