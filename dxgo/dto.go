@@ -27,13 +27,18 @@ type ProjectDescribeInput struct {
 }
 
 type ProjectDescribeOutput struct {
-	Name    string   `json:"name"`
-	Folders []string `json:"folders"`
+	Name    string    `json:"name"`
+	Folders []string  `json:"folders"`
+	Error   *ApiError `json:"error"`
 }
 
 type ProjectNewFolderInput struct {
 	ID     string `json:"id"`
 	Folder string `json:"folder"`
+}
+
+type ProjectNewFolderOutput struct {
+	Error *ApiError `json:"error"`
 }
 
 type DXAssetType string
@@ -61,11 +66,14 @@ type FindDataObjectsResult struct {
 type FindDataObjectsOutput struct {
 	Results []*FindDataObjectsResult `json:"results"`
 	Next    map[string]interface{}   `json:"next"`
+	Error   *ApiError                `json:"error"`
 }
 
-type SystemRequirements struct {
+type SystemRequirementsValue struct {
 	InstanceType string `json:"instanceType"`
 }
+
+type SystemRequirements map[string]*SystemRequirementsValue
 
 type AppletRunInput struct {
 	ID                 string                 `json:"id"`
@@ -84,12 +92,17 @@ type JobTerminateInput struct {
 	ID string `json:"id"`
 }
 
+type JobTerminateOutput struct {
+	Error *ApiError `json:"error"`
+}
+
 type JobDescribeInput struct {
 	ID string `json:"id"`
 }
 
 type JobDescribeOutput struct {
-	State string `json:"state"`
+	State string    `json:"state"`
+	Error *ApiError `json:"error"`
 }
 
 type FileDownloadInput struct {
@@ -104,6 +117,7 @@ type FileDownloadInput struct {
 type FileDownloadOutput struct {
 	URL     string            `json:"url"`
 	Headers map[string]string `json:"headers"`
+	Error   *ApiError         `json:"error"`
 }
 
 type RemoveObjectsInput struct {
@@ -112,9 +126,17 @@ type RemoveObjectsInput struct {
 	Force   bool     `json:"force"`
 }
 
+type RemoveObjectsOutput struct {
+	Error *ApiError `json:"error"`
+}
+
 type RemoveFolderInput struct {
 	Project string `json:"project"`
 	Folder  string `json:"folder"`
 	Force   bool   `json:"force"`
 	Recurse bool   `json:"recurse"`
+}
+
+type RemoveFolderOutput struct {
+	Error *ApiError `json:"error"`
 }

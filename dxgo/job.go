@@ -5,12 +5,17 @@ import (
 	"fmt"
 )
 
-func (c *DXClient) JobTerminate(input *JobTerminateInput) error {
-	_, err := c.retryableRequest(fmt.Sprintf("/%s/terminate", input.ID), input)
+func (c *DXClient) JobTerminate(input *JobTerminateInput) (*JobTerminateOutput, error) {
+	data, err := c.retryableRequest(fmt.Sprintf("/%s/terminate", input.ID), input)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	output := new(JobTerminateOutput)
+	err = json.Unmarshal(data, output)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
 }
 
 func (c *DXClient) JobDescribe(input *JobDescribeInput) (*JobDescribeOutput, error) {
