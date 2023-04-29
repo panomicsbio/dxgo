@@ -81,6 +81,7 @@ type AppletRunInput struct {
 	Input              map[string]interface{} `json:"input"`
 	SystemRequirements *SystemRequirements    `json:"systemRequirements"`
 	Properties         map[string]string      `json:"properties"`
+	Detach             bool                   `json:"detach"`
 }
 
 type AppletRunOutput struct {
