@@ -77,7 +77,7 @@ type SystemRequirements map[string]*SystemRequirementsValue
 
 type AppletRunInput struct {
 	ID                 string                 `json:"id"`
-	Project            string                 `json:"project"`
+	Project            string                 `json:"project,omitempty"`
 	Input              map[string]interface{} `json:"input"`
 	SystemRequirements *SystemRequirements    `json:"systemRequirements"`
 	Properties         map[string]string      `json:"properties"`
