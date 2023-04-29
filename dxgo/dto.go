@@ -58,11 +58,11 @@ type AppletRunInput struct {
 	Input              map[string]interface{} `json:"input"`
 	SystemRequirements *SystemRequirements    `json:"systemRequirements"`
 	Properties         map[string]string      `json:"properties"`
-	Error              ApiError               `json:"error"`
 }
 
 type AppletRunOutput struct {
-	ID string `json:"id"`
+	ID    string   `json:"id"`
+	Error ApiError `json:"error"`
 }
 
 type JobTerminateInput struct {
