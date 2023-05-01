@@ -50,7 +50,7 @@ type FindDataObjectsScope struct {
 }
 
 type FindDataObjectsInput struct {
-	Name     string                 `json:"name"`
+	Name     string                 `json:"name,omitempty"`
 	Class    DXAssetType            `json:"class"`
 	Scope    *FindDataObjectsScope  `json:"scope"`
 	Describe bool                   `json:"describe"`
