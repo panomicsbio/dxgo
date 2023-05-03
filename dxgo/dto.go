@@ -82,6 +82,7 @@ type AppletRunInput struct {
 	SystemRequirements *SystemRequirements    `json:"systemRequirements"`
 	Properties         map[string]string      `json:"properties"`
 	Detach             bool                   `json:"detach"`
+	HeadJobOnDemand    bool                   `json:"headJobOnDemand"`
 }
 
 type AppletRunOutput struct {
