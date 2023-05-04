@@ -23,13 +23,14 @@ func (e *ApiError) String() string {
 
 type ProjectDescribeInput struct {
 	ID     string          `json:"id"`
-	Fields map[string]bool `json:"fields"`
+	Fields map[string]bool `json:"fields,omitempty"`
 }
 
 type ProjectDescribeOutput struct {
-	Name    string    `json:"name"`
-	Folders []string  `json:"folders"`
-	Error   *ApiError `json:"error"`
+	Name                 string                 `json:"name"`
+	Folders              []string               `json:"folders"`
+	FileUploadParameters map[string]interface{} `json:"fileUploadParameters"`
+	Error                *ApiError              `json:"error"`
 }
 
 type ProjectNewFolderInput struct {
@@ -141,4 +142,26 @@ type RemoveFolderInput struct {
 
 type RemoveFolderOutput struct {
 	Error *ApiError `json:"error"`
+}
+
+type FileNewInput struct {
+	Project string `json:"project"`
+	Folder  string `json:"folder"`
+	Parent  bool   `json:"parents"`
+	Name    string `json:"name"`
+}
+
+type FileNewOutput struct {
+	ID string `json:"id"`
+}
+
+type FileUploadInput struct {
+	ID    string `json:"id"`
+	Size  uint   `json:"size"`
+	MD5   string `json:"md5"`
+	Index uint   `json:"index"`
+}
+
+type FileUploadOutput struct {
+	URL string `json:"url"`
 }
