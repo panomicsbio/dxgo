@@ -109,3 +109,7 @@ func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, erro
 	}), retry.Attempts(c.config.MaxRetries))
 	return resp, err
 }
+
+func (c *DXClient) GetMaxRetries() uint {
+	return c.config.MaxRetries
+}
