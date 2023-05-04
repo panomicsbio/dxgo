@@ -43,3 +43,16 @@ func (c *DXClient) FileUpload(input *FileUploadInput) (*FileUploadOutput, error)
 	}
 	return output, nil
 }
+
+func (c *DXClient) FileClose(input *FileCloseInput) (*FileCloseOutput, error) {
+	data, err := c.retryableRequest(fmt.Sprintf("/%s/close", input.ID), input)
+	if err != nil {
+		return nil, err
+	}
+	output := new(FileCloseOutput)
+	err = json.Unmarshal(data, output)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
+}

@@ -167,3 +167,11 @@ type FileUploadOutput struct {
 	URL   string    `json:"url"`
 	Error *ApiError `json:"error"`
 }
+
+type FileCloseInput struct {
+	ID string `json:"id"`
+}
+
+type FileCloseOutput struct {
+	Error *ApiError `json:"error"`
+}
