@@ -152,7 +152,8 @@ type FileNewInput struct {
 }
 
 type FileNewOutput struct {
-	ID string `json:"id"`
+	ID    string    `json:"id"`
+	Error *ApiError `json:"error"`
 }
 
 type FileUploadInput struct {
@@ -163,5 +164,6 @@ type FileUploadInput struct {
 }
 
 type FileUploadOutput struct {
-	URL string `json:"url"`
+	URL   string    `json:"url"`
+	Error *ApiError `json:"error"`
 }
