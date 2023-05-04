@@ -157,9 +157,9 @@ type FileNewOutput struct {
 
 type FileUploadInput struct {
 	ID    string `json:"id"`
-	Size  uint   `json:"size"`
+	Size  int    `json:"size"`
 	MD5   string `json:"md5"`
-	Index uint   `json:"index"`
+	Index int    `json:"index"`
 }
 
 type FileUploadOutput struct {
