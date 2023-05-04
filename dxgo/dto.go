@@ -164,8 +164,9 @@ type FileUploadInput struct {
 }
 
 type FileUploadOutput struct {
-	URL   string    `json:"url"`
-	Error *ApiError `json:"error"`
+	URL     string            `json:"url"`
+	Headers map[string]string `json:"headers"`
+	Error   *ApiError         `json:"error"`
 }
 
 type FileCloseInput struct {
