@@ -169,6 +169,25 @@ type FileUploadOutput struct {
 	Error   *ApiError         `json:"error"`
 }
 
+type FindExecutionsInput struct {
+	Project   string `json:"project,omitempty"`
+	Class     string `json:"class,omitempty"`
+	State     string `json:"state,omitempty"`
+	OriginJob string `json:"originJob,omitempty"`
+	Starting  string `json:"starting,omitempty"`
+}
+
+type FindExecutionResult struct {
+	ID       string                 `json:"id"`
+	Describe map[string]interface{} `json:"describe"`
+}
+
+type FindExecutionsOutput struct {
+	Results []*FindExecutionResult `json:"results"`
+	Next    string                 `json:"string"`
+	Error   *ApiError              `json:"error"`
+}
+
 type FileCloseInput struct {
 	ID string `json:"id"`
 }
