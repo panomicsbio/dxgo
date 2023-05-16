@@ -50,10 +50,21 @@ type FindDataObjectsScope struct {
 	Recurse *bool   `json:"recurse"`
 }
 
+type DXSortByOrdering string
+
+const Ascending DXSortByOrdering = "ascending"
+const Descending DXSortByOrdering = "descending"
+
+type FindDataObjectsSortBy struct {
+	Field    string           `json:"field"`
+	Ordering DXSortByOrdering `json:"ordering"`
+}
+
 type FindDataObjectsInput struct {
 	Name     string                 `json:"name,omitempty"`
 	Class    DXAssetType            `json:"class"`
-	Scope    *FindDataObjectsScope  `json:"scope"`
+	Scope    *FindDataObjectsScope  `json:"scope,omitempty"`
+	SortBy   *FindDataObjectsSortBy `json:"sortBy,omitempty"`
 	Describe bool                   `json:"describe"`
 	Starting map[string]interface{} `json:"starting,omitempty"`
 }
