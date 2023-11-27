@@ -206,3 +206,14 @@ type FileCloseInput struct {
 type FileCloseOutput struct {
 	Error *ApiError `json:"error"`
 }
+
+type FileDescribeInput struct {
+	ID string `json:"id"`
+}
+
+type FileDescribeOutput struct {
+	Folder string    `json:"folder"`
+	State  string    `json:"state"`
+	Name   string    `json:"name"`
+	Error  *ApiError `json:"error"`
+}
