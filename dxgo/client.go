@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/aereal/go-httpretryafter"
-	"github.com/avast/retry-go"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/avast/retry-go"
 )
 
 type DXSecurityContext struct {
@@ -53,19 +54,6 @@ func (c *DXClient) getBaseEndpoint() string {
 	return fmt.Sprintf("%s://%s:%s", c.config.ApiServerProtocol, c.config.ApiServerHost, c.config.ApiServerPort)
 }
 
-type RetryAfterError struct {
-	response http.Response
-}
-
-func (err RetryAfterError) Error() string {
-	return fmt.Sprintf(
-		"Request to %s fail %s (%d)",
-		err.response.Request.RequestURI,
-		err.response.Status,
-		err.response.StatusCode,
-	)
-}
-
 func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
@@ -98,16 +86,19 @@ func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, erro
 			return err
 		}
 		return nil
-	}, retry.DelayType(func(n uint, err error, config *retry.Config) time.Duration {
-		switch e := err.(type) {
-		case RetryAfterError:
-			if t, err := httpretryafter.Parse(e.response.Header.Get("Retry-After")); err == nil {
-				return time.Until(t)
-			}
-		}
-		return retry.BackOffDelay(n, err, config)
-	}), retry.Attempts(c.config.MaxRetries))
+	}, retry.DelayType(retryDelay), retry.Attempts(c.config.MaxRetries))
 	return resp, err
+}
+
+func retryDelay(n uint, err error, config *retry.Config) time.Duration {
+	var e RetryAfterError
+	if errors.As(err, &e) {
+		if t, err := ParseRetryAfter(e.response.Header.Get("Retry-After")); err == nil {
+			return time.Until(t)
+		}
+	}
+
+	return retry.BackOffDelay(n, err, config)
 }
 
 func (c *DXClient) GetMaxRetries() uint {
