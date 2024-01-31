@@ -1,32 +1,25 @@
 package dxgo
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
-func (c *DXClient) JobTerminate(input *JobTerminateInput) (*JobTerminateOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/terminate", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) JobTerminate(input JobTerminateInput) (JobTerminateOutput, error) {
 	output := new(JobTerminateOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/terminate", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return JobTerminateOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) JobDescribe(input *JobDescribeInput) (*JobDescribeOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/describe", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) JobDescribe(input JobDescribeInput) (JobDescribeOutput, error) {
 	output := new(JobDescribeOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/describe", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return JobDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }

@@ -1,29 +1,23 @@
 package dxgo
 
-import "encoding/json"
+import "fmt"
 
-func (c *DXClient) FindDataObjects(input *FindDataObjectsInput) (*FindDataObjectsOutput, error) {
-	data, err := c.retryableRequest("/system/findDataObjects", input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) FindDataObjects(input FindDataObjectsInput) (FindDataObjectsOutput, error) {
 	output := new(FindDataObjectsOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto("/system/findDataObjects", input, output)
 	if err != nil {
-		return nil, err
+		return FindDataObjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) FindExecutions(input *FindExecutionsInput) (*FindExecutionsOutput, error) {
-	data, err := c.retryableRequest("/system/findExecutions", input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) FindExecutions(input FindExecutionsInput) (FindExecutionsOutput, error) {
 	output := new(FindExecutionsOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto("/system/findExecutions", input, output)
 	if err != nil {
-		return nil, err
+		return FindExecutionsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }

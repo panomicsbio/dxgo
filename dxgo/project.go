@@ -1,58 +1,45 @@
 package dxgo
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
-func (c *DXClient) ProjectDescribe(input *ProjectDescribeInput) (*ProjectDescribeOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/describe", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) ProjectDescribe(input ProjectDescribeInput) (ProjectDescribeOutput, error) {
 	output := new(ProjectDescribeOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/describe", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return ProjectDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) ProjectNewFolder(input *ProjectNewFolderInput) (*ProjectNewFolderOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/newFolder", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) ProjectNewFolder(input ProjectNewFolderInput) (ProjectNewFolderOutput, error) {
 	output := new(ProjectNewFolderOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/newFolder", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return ProjectNewFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) RemoveObjects(input *RemoveObjectsInput) (*RemoveObjectsOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/removeObjects", input.Project), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) RemoveObjects(input RemoveObjectsInput) (RemoveObjectsOutput, error) {
 	output := new(RemoveObjectsOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/removeObjects", input.Project), input, output)
 	if err != nil {
-		return nil, err
+		return RemoveObjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) RemoveFolder(input *RemoveFolderInput) (*RemoveFolderOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/removeFolder", input.Project), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) RemoveFolder(input RemoveFolderInput) (RemoveFolderOutput, error) {
 	output := new(RemoveFolderOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/describe", input.Project), input, output)
 	if err != nil {
-		return nil, err
+		return RemoveFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
