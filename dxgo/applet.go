@@ -1,19 +1,15 @@
 package dxgo
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
-func (c *DXClient) AppletRun(input *AppletRunInput) (*AppletRunOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/run", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) AppletRun(input AppletRunInput) (AppletRunOutput, error) {
 	output := new(AppletRunOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/run", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return AppletRunOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
