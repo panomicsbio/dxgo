@@ -1,71 +1,55 @@
 package dxgo
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
-func (c *DXClient) FileDownload(input *FileDownloadInput) (*FileDownloadOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/download", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) FileDownload(input FileDownloadInput) (FileDownloadOutput, error) {
 	output := new(FileDownloadOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/download", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return FileDownloadOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) FileNew(input *FileNewInput) (*FileNewOutput, error) {
-	data, err := c.retryableRequest("/file/new", input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) FileNew(input FileNewInput) (FileNewOutput, error) {
 	output := new(FileNewOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto("/file/new", input, output)
 	if err != nil {
-		return nil, err
+		return FileNewOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) FileUpload(input *FileUploadInput) (*FileUploadOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/upload", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) FileUpload(input FileUploadInput) (FileUploadOutput, error) {
 	output := new(FileUploadOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/upload", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return FileUploadOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) FileClose(input *FileCloseInput) (*FileCloseOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/close", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) FileClose(input FileCloseInput) (FileCloseOutput, error) {
 	output := new(FileCloseOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/close", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return FileCloseOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }
 
-func (c *DXClient) FileDescribe(input *FileDescribeInput) (*FileDescribeOutput, error) {
-	data, err := c.retryableRequest(fmt.Sprintf("/%s/describe", input.ID), input)
-	if err != nil {
-		return nil, err
-	}
+func (c *DXClient) FileDescribe(input FileDescribeInput) (FileDescribeOutput, error) {
 	output := new(FileDescribeOutput)
-	err = json.Unmarshal(data, output)
+	err := c.DoInto(fmt.Sprintf("/%s/describe", input.ID), input, output)
 	if err != nil {
-		return nil, err
+		return FileDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-	return output, nil
+
+	return *output, nil
 }

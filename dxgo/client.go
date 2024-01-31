@@ -2,15 +2,18 @@ package dxgo
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/aereal/go-httpretryafter"
-	"github.com/avast/retry-go"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/avast/retry-go"
 )
 
 type DXSecurityContext struct {
@@ -53,61 +56,82 @@ func (c *DXClient) getBaseEndpoint() string {
 	return fmt.Sprintf("%s://%s:%s", c.config.ApiServerProtocol, c.config.ApiServerHost, c.config.ApiServerPort)
 }
 
-type RetryAfterError struct {
-	response http.Response
-}
+func (c *DXClient) DoInto(uri string, input any, output any) error {
+	data, err := c.retryableRequest(uri, input)
+	if err != nil {
+		return fmt.Errorf("making retryable request: %w", err)
+	}
 
-func (err RetryAfterError) Error() string {
-	return fmt.Sprintf(
-		"Request to %s fail %s (%d)",
-		err.response.Request.RequestURI,
-		err.response.Status,
-		err.response.StatusCode,
-	)
+	err = json.Unmarshal(data, output)
+	if err != nil {
+		return fmt.Errorf("unmarshalling data: %w", err)
+	}
+
+	return nil
 }
 
 func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
-		postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
-		data, err := json.Marshal(input)
+		var err error
+		resp, err = c.request(uri, input)
+		return err
+	}, retry.DelayType(retryDelay), retry.Attempts(c.config.MaxRetries))
+	if err != nil {
+		return nil, fmt.Errorf("doing retry on dxclient request: %w", err)
+	}
+
+	return resp, nil
+}
+
+func (c *DXClient) request(uri string, input interface{}) ([]byte, error) {
+	postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
+	data, err := json.Marshal(input)
+	if err != nil {
+		return nil, fmt.Errorf("marshalling request input: %w", err)
+	}
+
+	r, err := http.NewRequest("POST", postUrl, bytes.NewReader(data))
+	if err != nil {
+		return nil, fmt.Errorf("creating http request: %w", err)
+	}
+
+	r.Header.Add("Authorization", fmt.Sprintf("%s %s", c.config.DXSecurityContext.AuthTokenType, c.config.DXSecurityContext.AuthToken))
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	res, err := client.Do(r)
+	if err != nil {
+		return nil, fmt.Errorf("making http request: %w", err)
+	}
+	defer func() {
+		err := res.Body.Close()
 		if err != nil {
-			return err
+			slog.LogAttrs(context.Background(), slog.LevelError, "closing response body", slog.Any("err", err))
 		}
-		r, err := http.NewRequest("POST", postUrl, bytes.NewReader(data))
-		if err != nil {
-			return err
+	}()
+
+	if res.StatusCode == http.StatusServiceUnavailable {
+		return nil, RetryAfterError{response: *res}
+	}
+
+	resp, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, fmt.Errorf("reading response boyd: %w", err)
+	}
+	return resp, nil
+}
+
+func retryDelay(n uint, err error, config *retry.Config) time.Duration {
+	var e RetryAfterError
+	if errors.As(err, &e) {
+		if t, err := ParseRetryAfter(e.response.Header.Get("Retry-After")); err == nil {
+			return time.Until(t)
 		}
-		r.Header.Add("Authorization", fmt.Sprintf("%s %s", c.config.DXSecurityContext.AuthTokenType, c.config.DXSecurityContext.AuthToken))
-		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		}
-		client := &http.Client{Transport: tr}
-		res, err := client.Do(r)
-		if err != nil {
-			return err
-		}
-		defer func(Body io.ReadCloser) {
-			_ = Body.Close()
-		}(res.Body)
-		if res.StatusCode == 503 {
-			return RetryAfterError{response: *res}
-		}
-		resp, err = io.ReadAll(res.Body)
-		if err != nil {
-			return err
-		}
-		return nil
-	}, retry.DelayType(func(n uint, err error, config *retry.Config) time.Duration {
-		switch e := err.(type) {
-		case RetryAfterError:
-			if t, err := httpretryafter.Parse(e.response.Header.Get("Retry-After")); err == nil {
-				return time.Until(t)
-			}
-		}
-		return retry.BackOffDelay(n, err, config)
-	}), retry.Attempts(c.config.MaxRetries))
-	return resp, err
+	}
+
+	return retry.BackOffDelay(n, err, config)
 }
 
 func (c *DXClient) GetMaxRetries() uint {

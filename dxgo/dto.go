@@ -91,7 +91,7 @@ type AppletRunInput struct {
 	ID                 string                 `json:"id"`
 	Project            *string                `json:"project,omitempty"`
 	Input              map[string]interface{} `json:"input"`
-	SystemRequirements *SystemRequirements    `json:"systemRequirements"`
+	SystemRequirements SystemRequirements     `json:"systemRequirements"`
 	Properties         map[string]string      `json:"properties"`
 	Detach             bool                   `json:"detach"`
 	HeadJobOnDemand    bool                   `json:"headJobOnDemand"`

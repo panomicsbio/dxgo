@@ -1,5 +1,3 @@
-github.com/aereal/go-httpretryafter v0.0.0-20201002052800-c08be88dd146 h1:TP/3jHzSgS17VNIPwJyTSBlh6FabPZgD5zQvI7xrdUQ=
-github.com/aereal/go-httpretryafter v0.0.0-20201002052800-c08be88dd146/go.mod h1:mvYokGNDYR7OwJFTruS7fhXT9pHtFBso10IYHXxuCm0=
 github.com/avast/retry-go v3.0.0+incompatible h1:4SOWQ7Qs+oroOTQOYnAHqelpCO0biHSxpiH9JdtuBj0=
 github.com/avast/retry-go v3.0.0+incompatible/go.mod h1:XtSnn+n/sHqQIpZ10K1qAevBhOOCWBLXXy3hyiqqBrY=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
