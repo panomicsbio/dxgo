@@ -2,11 +2,13 @@ package dxgo
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -57,10 +59,15 @@ func (c *DXClient) getBaseEndpoint() string {
 func (c *DXClient) DoInto(uri string, input any, output any) error {
 	data, err := c.retryableRequest(uri, input)
 	if err != nil {
-		return err
+		return fmt.Errorf("making retryable request: %w", err)
 	}
 
-	return json.Unmarshal(data, output)
+	err = json.Unmarshal(data, output)
+	if err != nil {
+		return fmt.Errorf("unmarshalling data: %w", err)
+	}
+
+	return nil
 }
 
 func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, error) {
@@ -70,20 +77,25 @@ func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, erro
 		resp, err = c.request(uri, input)
 		return err
 	}, retry.DelayType(retryDelay), retry.Attempts(c.config.MaxRetries))
+	if err != nil {
+		return nil, fmt.Errorf("doing retry on dxclient request: %w", err)
+	}
 
-	return resp, err
+	return resp, nil
 }
 
 func (c *DXClient) request(uri string, input interface{}) ([]byte, error) {
 	postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
 	data, err := json.Marshal(input)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("marshalling request input: %w", err)
 	}
+
 	r, err := http.NewRequest("POST", postUrl, bytes.NewReader(data))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("creating http request: %w", err)
 	}
+
 	r.Header.Add("Authorization", fmt.Sprintf("%s %s", c.config.DXSecurityContext.AuthTokenType, c.config.DXSecurityContext.AuthToken))
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -91,18 +103,22 @@ func (c *DXClient) request(uri string, input interface{}) ([]byte, error) {
 	client := &http.Client{Transport: tr}
 	res, err := client.Do(r)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("making http request: %w", err)
 	}
-	defer func(Body io.ReadCloser) {
-		_ = Body.Close()
-	}(res.Body)
-	if res.StatusCode == 503 {
+	defer func() {
+		err := res.Body.Close()
+		if err != nil {
+			slog.LogAttrs(context.Background(), slog.LevelError, "closing response body", slog.Any("err", err))
+		}
+	}()
+
+	if res.StatusCode == http.StatusServiceUnavailable {
 		return nil, RetryAfterError{response: *res}
 	}
 
 	resp, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("reading response boyd: %w", err)
 	}
 	return resp, nil
 }
