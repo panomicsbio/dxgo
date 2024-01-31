@@ -54,40 +54,57 @@ func (c *DXClient) getBaseEndpoint() string {
 	return fmt.Sprintf("%s://%s:%s", c.config.ApiServerProtocol, c.config.ApiServerHost, c.config.ApiServerPort)
 }
 
+func (c *DXClient) DoInto(uri string, input any, output any) error {
+	data, err := c.retryableRequest(uri, input)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(data, output)
+}
+
 func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
-		postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
-		data, err := json.Marshal(input)
-		if err != nil {
-			return err
-		}
-		r, err := http.NewRequest("POST", postUrl, bytes.NewReader(data))
-		if err != nil {
-			return err
-		}
-		r.Header.Add("Authorization", fmt.Sprintf("%s %s", c.config.DXSecurityContext.AuthTokenType, c.config.DXSecurityContext.AuthToken))
-		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		}
-		client := &http.Client{Transport: tr}
-		res, err := client.Do(r)
-		if err != nil {
-			return err
-		}
-		defer func(Body io.ReadCloser) {
-			_ = Body.Close()
-		}(res.Body)
-		if res.StatusCode == 503 {
-			return RetryAfterError{response: *res}
-		}
-		resp, err = io.ReadAll(res.Body)
-		if err != nil {
-			return err
-		}
-		return nil
+		var err error
+		resp, err = c.request(uri, input)
+		return err
 	}, retry.DelayType(retryDelay), retry.Attempts(c.config.MaxRetries))
+
 	return resp, err
+}
+
+func (c *DXClient) request(uri string, input interface{}) ([]byte, error) {
+	postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
+	data, err := json.Marshal(input)
+	if err != nil {
+		return nil, err
+	}
+	r, err := http.NewRequest("POST", postUrl, bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	r.Header.Add("Authorization", fmt.Sprintf("%s %s", c.config.DXSecurityContext.AuthTokenType, c.config.DXSecurityContext.AuthToken))
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	res, err := client.Do(r)
+	if err != nil {
+		return nil, err
+	}
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(res.Body)
+	if res.StatusCode == 503 {
+		return nil, RetryAfterError{response: *res}
+	}
+
+	resp, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
 
 func retryDelay(n uint, err error, config *retry.Config) time.Duration {
