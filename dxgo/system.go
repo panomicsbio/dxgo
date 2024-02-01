@@ -8,7 +8,6 @@ func (c *DXClient) FindDataObjects(input FindDataObjectsInput) (FindDataObjectsO
 	if err != nil {
 		return FindDataObjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
-
 	return *output, nil
 }
 
@@ -18,6 +17,14 @@ func (c *DXClient) FindExecutions(input FindExecutionsInput) (FindExecutionsOutp
 	if err != nil {
 		return FindExecutionsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
+	return *output, nil
+}
 
+func (c *DXClient) FindProjects(input FindProjectsInput) (FindProjectsOutput, error) {
+	output := new(FindProjectsOutput)
+	err := c.DoInto("/system/findProjects", input, output)
+	if err != nil {
+		return FindProjectsOutput{}, fmt.Errorf("doing request: %w", err)
+	}
 	return *output, nil
 }

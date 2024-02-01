@@ -27,10 +27,10 @@ type ProjectDescribeInput struct {
 }
 
 type ProjectDescribeOutput struct {
-	Name                 string                 `json:"name"`
-	Folders              []string               `json:"folders"`
-	FileUploadParameters map[string]interface{} `json:"fileUploadParameters"`
-	Error                *ApiError              `json:"error"`
+	Name                 string         `json:"name"`
+	Folders              []string       `json:"folders"`
+	FileUploadParameters map[string]any `json:"fileUploadParameters"`
+	Error                *ApiError      `json:"error"`
 }
 
 type ProjectNewFolderInput struct {
@@ -66,18 +66,18 @@ type FindDataObjectsInput struct {
 	Scope    *FindDataObjectsScope  `json:"scope,omitempty"`
 	SortBy   *FindDataObjectsSortBy `json:"sortBy,omitempty"`
 	Describe bool                   `json:"describe"`
-	Starting map[string]interface{} `json:"starting,omitempty"`
+	Starting map[string]any         `json:"starting,omitempty"`
 }
 
 type FindDataObjectsResult struct {
-	Project  string                 `json:"project"`
-	ID       string                 `json:"id"`
-	Describe map[string]interface{} `json:"describe"`
+	Project  string         `json:"project"`
+	ID       string         `json:"id"`
+	Describe map[string]any `json:"describe"`
 }
 
 type FindDataObjectsOutput struct {
 	Results []*FindDataObjectsResult `json:"results"`
-	Next    map[string]interface{}   `json:"next"`
+	Next    map[string]any           `json:"next"`
 	Error   *ApiError                `json:"error"`
 }
 
@@ -88,13 +88,13 @@ type SystemRequirementsValue struct {
 type SystemRequirements map[string]*SystemRequirementsValue
 
 type AppletRunInput struct {
-	ID                 string                 `json:"id"`
-	Project            *string                `json:"project,omitempty"`
-	Input              map[string]interface{} `json:"input"`
-	SystemRequirements SystemRequirements     `json:"systemRequirements"`
-	Properties         map[string]string      `json:"properties"`
-	Detach             bool                   `json:"detach"`
-	HeadJobOnDemand    bool                   `json:"headJobOnDemand"`
+	ID                 string             `json:"id"`
+	Project            *string            `json:"project,omitempty"`
+	Input              map[string]any     `json:"input"`
+	SystemRequirements SystemRequirements `json:"systemRequirements"`
+	Properties         map[string]string  `json:"properties"`
+	Detach             bool               `json:"detach"`
+	HeadJobOnDemand    bool               `json:"headJobOnDemand"`
 }
 
 type AppletRunOutput struct {
@@ -189,8 +189,8 @@ type FindExecutionsInput struct {
 }
 
 type FindExecutionResult struct {
-	ID       string                 `json:"id"`
-	Describe map[string]interface{} `json:"describe"`
+	ID       string         `json:"id"`
+	Describe map[string]any `json:"describe"`
 }
 
 type FindExecutionsOutput struct {
@@ -216,4 +216,22 @@ type FileDescribeOutput struct {
 	State  string    `json:"state"`
 	Name   string    `json:"name"`
 	Error  *ApiError `json:"error"`
+}
+
+type FindProjectsInput struct {
+	Level    string         `json:"level,omitempty"`
+	Starting string         `json:"starting,omitempty"`
+	Describe map[string]any `json:"describe"`
+}
+
+type FindProjectsOutput struct {
+	Results []*FindProjectsResult `json:"results"`
+	Next    string                `json:"next"`
+	Error   *ApiError             `json:"error"`
+}
+
+type FindProjectsResult struct {
+	ID       string         `json:"id"`
+	Level    string         `json:"level"`
+	Describe map[string]any `json:"describe"`
 }
