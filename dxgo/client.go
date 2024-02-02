@@ -137,3 +137,15 @@ func retryDelay(n uint, err error, config *retry.Config) time.Duration {
 func (c *DXClient) GetMaxRetries() uint {
 	return c.config.MaxRetries
 }
+
+func (c *DXClient) GetApiServerProtocol() string {
+	return c.config.ApiServerProtocol
+}
+
+func (c *DXClient) GetApiServerHost() string {
+	return c.config.ApiServerHost
+}
+
+func (c *DXClient) GetApiServerPort() string {
+	return c.config.ApiServerPort
+}
