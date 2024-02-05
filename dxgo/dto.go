@@ -233,5 +233,6 @@ type FindProjectsOutput struct {
 type FindProjectsResult struct {
 	ID       string         `json:"id"`
 	Level    string         `json:"level"`
+	Public   bool           `json:"public"`
 	Describe map[string]any `json:"describe"`
 }
