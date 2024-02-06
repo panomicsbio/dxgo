@@ -61,7 +61,7 @@ type FindDataObjectsSortBy struct {
 }
 
 type FindDataObjectsInput struct {
-	Name     string                 `json:"name,omitempty"`
+	Name     any                    `json:"name,omitempty"`
 	Class    DXAssetType            `json:"class"`
 	Scope    *FindDataObjectsScope  `json:"scope,omitempty"`
 	SortBy   *FindDataObjectsSortBy `json:"sortBy,omitempty"`
