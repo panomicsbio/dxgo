@@ -219,6 +219,7 @@ type FileDescribeOutput struct {
 }
 
 type FindProjectsInput struct {
+	Name     any            `json:"name,omitempty"`
 	Level    string         `json:"level,omitempty"`
 	Starting string         `json:"starting,omitempty"`
 	Describe map[string]any `json:"describe"`
