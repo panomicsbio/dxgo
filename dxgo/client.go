@@ -56,8 +56,8 @@ func (c *DXClient) getBaseEndpoint() string {
 	return fmt.Sprintf("%s://%s:%s", c.config.ApiServerProtocol, c.config.ApiServerHost, c.config.ApiServerPort)
 }
 
-func (c *DXClient) DoInto(uri string, input any, output any) error {
-	data, err := c.retryableRequest(uri, input)
+func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any) error {
+	data, err := c.retryableRequest(ctx, uri, input)
 	if err != nil {
 		return fmt.Errorf("making retryable request: %w", err)
 	}
@@ -70,11 +70,11 @@ func (c *DXClient) DoInto(uri string, input any, output any) error {
 	return nil
 }
 
-func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, error) {
+func (c *DXClient) retryableRequest(ctx context.Context, uri string, input interface{}) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
 		var err error
-		resp, err = c.request(uri, input)
+		resp, err = c.request(ctx, uri, input)
 		return err
 	}, retry.DelayType(retryDelay), retry.Attempts(c.config.MaxRetries))
 	if err != nil {
@@ -84,14 +84,14 @@ func (c *DXClient) retryableRequest(uri string, input interface{}) ([]byte, erro
 	return resp, nil
 }
 
-func (c *DXClient) request(uri string, input interface{}) ([]byte, error) {
+func (c *DXClient) request(ctx context.Context, uri string, input interface{}) ([]byte, error) {
 	postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
 	data, err := json.Marshal(input)
 	if err != nil {
 		return nil, fmt.Errorf("marshalling request input: %w", err)
 	}
 
-	r, err := http.NewRequest("POST", postUrl, bytes.NewReader(data))
+	r, err := http.NewRequestWithContext(ctx, "POST", postUrl, bytes.NewReader(data))
 	if err != nil {
 		return nil, fmt.Errorf("creating http request: %w", err)
 	}
