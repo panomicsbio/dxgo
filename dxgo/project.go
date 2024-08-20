@@ -1,12 +1,13 @@
 package dxgo
 
 import (
+	"context"
 	"fmt"
 )
 
-func (c *DXClient) ProjectDescribe(input ProjectDescribeInput) (ProjectDescribeOutput, error) {
+func (c *DXClient) ProjectDescribe(ctx context.Context, input ProjectDescribeInput) (ProjectDescribeOutput, error) {
 	output := new(ProjectDescribeOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/describe", input.ID), input, output)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/describe", input.ID), input, output)
 	if err != nil {
 		return ProjectDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -14,9 +15,9 @@ func (c *DXClient) ProjectDescribe(input ProjectDescribeInput) (ProjectDescribeO
 	return *output, nil
 }
 
-func (c *DXClient) ProjectNewFolder(input ProjectNewFolderInput) (ProjectNewFolderOutput, error) {
+func (c *DXClient) ProjectNewFolder(ctx context.Context, input ProjectNewFolderInput) (ProjectNewFolderOutput, error) {
 	output := new(ProjectNewFolderOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/newFolder", input.ID), input, output)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/newFolder", input.ID), input, output)
 	if err != nil {
 		return ProjectNewFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -24,9 +25,9 @@ func (c *DXClient) ProjectNewFolder(input ProjectNewFolderInput) (ProjectNewFold
 	return *output, nil
 }
 
-func (c *DXClient) RemoveObjects(input RemoveObjectsInput) (RemoveObjectsOutput, error) {
+func (c *DXClient) RemoveObjects(ctx context.Context, input RemoveObjectsInput) (RemoveObjectsOutput, error) {
 	output := new(RemoveObjectsOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/removeObjects", input.Project), input, output)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/removeObjects", input.Project), input, output)
 	if err != nil {
 		return RemoveObjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -34,9 +35,9 @@ func (c *DXClient) RemoveObjects(input RemoveObjectsInput) (RemoveObjectsOutput,
 	return *output, nil
 }
 
-func (c *DXClient) RemoveFolder(input RemoveFolderInput) (RemoveFolderOutput, error) {
+func (c *DXClient) RemoveFolder(ctx context.Context, input RemoveFolderInput) (RemoveFolderOutput, error) {
 	output := new(RemoveFolderOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/describe", input.Project), input, output)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/describe", input.Project), input, output)
 	if err != nil {
 		return RemoveFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
