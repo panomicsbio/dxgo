@@ -75,6 +75,9 @@ func (c *DXClient) retryableRequest(ctx context.Context, uri string, input inter
 	err := retry.Do(func() error {
 		var err error
 		resp, err = c.request(ctx, uri, input)
+		if err != nil {
+			slog.Log(context.TODO(), slog.LevelError, "error making request", slog.Any("err", err))
+		}
 		return err
 	}, retry.DelayType(retryDelay), retry.Attempts(c.config.MaxRetries))
 	if err != nil {
@@ -118,7 +121,7 @@ func (c *DXClient) request(ctx context.Context, uri string, input interface{}) (
 
 	resp, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, fmt.Errorf("reading response boyd: %w", err)
+		return nil, fmt.Errorf("reading response body: %w", err)
 	}
 	return resp, nil
 }
