@@ -1,13 +1,13 @@
 package dxgo
 
 import (
-	"context"
 	"fmt"
+	"time"
 )
 
-func (c *DXClient) JobTerminate(ctx context.Context, input JobTerminateInput) (JobTerminateOutput, error) {
+func (c *DXClient) JobTerminate(input JobTerminateInput, timeout time.Duration) (JobTerminateOutput, error) {
 	output := new(JobTerminateOutput)
-	err := c.DoInto(ctx, fmt.Sprintf("/%s/terminate", input.ID), input, output)
+	err := c.DoInto(fmt.Sprintf("/%s/terminate", input.ID), input, output, timeout)
 	if err != nil {
 		return JobTerminateOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -15,9 +15,9 @@ func (c *DXClient) JobTerminate(ctx context.Context, input JobTerminateInput) (J
 	return *output, nil
 }
 
-func (c *DXClient) JobDescribe(ctx context.Context, input JobDescribeInput) (JobDescribeOutput, error) {
+func (c *DXClient) JobDescribe(input JobDescribeInput, timeout time.Duration) (JobDescribeOutput, error) {
 	output := new(JobDescribeOutput)
-	err := c.DoInto(ctx, fmt.Sprintf("/%s/describe", input.ID), input, output)
+	err := c.DoInto(fmt.Sprintf("/%s/describe", input.ID), input, output, timeout)
 	if err != nil {
 		return JobDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}

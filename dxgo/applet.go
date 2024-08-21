@@ -1,13 +1,13 @@
 package dxgo
 
 import (
-	"context"
 	"fmt"
+	"time"
 )
 
-func (c *DXClient) AppletRun(ctx context.Context, input AppletRunInput) (AppletRunOutput, error) {
+func (c *DXClient) AppletRun(input AppletRunInput, timeout time.Duration) (AppletRunOutput, error) {
 	output := new(AppletRunOutput)
-	err := c.DoInto(ctx, fmt.Sprintf("/%s/run", input.ID), input, output)
+	err := c.DoInto(fmt.Sprintf("/%s/run", input.ID), input, output, timeout)
 	if err != nil {
 		return AppletRunOutput{}, fmt.Errorf("doing request: %w", err)
 	}

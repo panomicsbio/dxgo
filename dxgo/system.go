@@ -1,31 +1,31 @@
 package dxgo
 
 import (
-	"context"
 	"fmt"
+	"time"
 )
 
-func (c *DXClient) FindDataObjects(ctx context.Context, input FindDataObjectsInput) (FindDataObjectsOutput, error) {
+func (c *DXClient) FindDataObjects(input FindDataObjectsInput, timeout time.Duration) (FindDataObjectsOutput, error) {
 	output := new(FindDataObjectsOutput)
-	err := c.DoInto(ctx, "/system/findDataObjects", input, output)
+	err := c.DoInto("/system/findDataObjects", input, output, timeout)
 	if err != nil {
 		return FindDataObjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
 	return *output, nil
 }
 
-func (c *DXClient) FindExecutions(ctx context.Context, input FindExecutionsInput) (FindExecutionsOutput, error) {
+func (c *DXClient) FindExecutions(input FindExecutionsInput, timeout time.Duration) (FindExecutionsOutput, error) {
 	output := new(FindExecutionsOutput)
-	err := c.DoInto(ctx, "/system/findExecutions", input, output)
+	err := c.DoInto("/system/findExecutions", input, output, timeout)
 	if err != nil {
 		return FindExecutionsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
 	return *output, nil
 }
 
-func (c *DXClient) FindProjects(ctx context.Context, input FindProjectsInput) (FindProjectsOutput, error) {
+func (c *DXClient) FindProjects(input FindProjectsInput, timeout time.Duration) (FindProjectsOutput, error) {
 	output := new(FindProjectsOutput)
-	err := c.DoInto(ctx, "/system/findProjects", input, output)
+	err := c.DoInto("/system/findProjects", input, output, timeout)
 	if err != nil {
 		return FindProjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
