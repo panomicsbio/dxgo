@@ -37,7 +37,7 @@ func (c *DXClient) RemoveObjects(input RemoveObjectsInput, timeout time.Duration
 
 func (c *DXClient) RemoveFolder(input RemoveFolderInput, timeout time.Duration) (RemoveFolderOutput, error) {
 	output := new(RemoveFolderOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/describe", input.Project), input, output, timeout)
+	err := c.DoInto(fmt.Sprintf("/%s/removeFolder", input.Project), input, output, timeout)
 	if err != nil {
 		return RemoveFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
