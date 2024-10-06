@@ -158,9 +158,11 @@ type FindExecutionsOutput struct {
 	Next    string                 `json:"string"`
 	Error   *ApiError              `json:"error"`
 }
-
-type FileDescribeInput struct {
-	ID string `json:"id"`
+type FindProjectsInput struct {
+	Name     any            `json:"name,omitempty"`
+	Level    string         `json:"level,omitempty"`
+	Starting string         `json:"starting,omitempty"`
+	Describe map[string]any `json:"describe"`
 }
 
 type FindProjectsOutput struct {

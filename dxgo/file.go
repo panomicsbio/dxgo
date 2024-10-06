@@ -93,18 +93,15 @@ func (c *DXClient) FileClose(input FileCloseInput, timeout time.Duration) (FileC
 	return *output, nil
 }
 
+type FileDescribeInput struct {
+	ID string `json:"id"`
+}
+
 type FileDescribeOutput struct {
 	Folder string    `json:"folder"`
 	State  string    `json:"state"`
 	Name   string    `json:"name"`
 	Error  *ApiError `json:"error"`
-}
-
-type FindProjectsInput struct {
-	Name     any            `json:"name,omitempty"`
-	Level    string         `json:"level,omitempty"`
-	Starting string         `json:"starting,omitempty"`
-	Describe map[string]any `json:"describe"`
 }
 
 func (c *DXClient) FileDescribe(input FileDescribeInput, timeout time.Duration) (FileDescribeOutput, error) {
@@ -115,4 +112,8 @@ func (c *DXClient) FileDescribe(input FileDescribeInput, timeout time.Duration) 
 	}
 
 	return *output, nil
+}
+
+func (c *DXClient) FileClone(input CloneInput, timeout time.Duration) (CloneOutput, error) {
+	return c.Clone("file-xxxx", input, timeout)
 }
