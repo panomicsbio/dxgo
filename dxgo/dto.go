@@ -119,21 +119,6 @@ type JobDescribeOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-type FileDownloadInput struct {
-	ID               string  `json:"id"`
-	Duration         *int    `json:"duration,omitempty"`
-	Filename         *string `json:"filename,omitempty"`
-	Project          string  `json:"project"`
-	Preauthenticated *bool   `json:"preauthenticated,omitempty"`
-	StickyIP         *bool   `json:"stickyIP,omitempty"`
-}
-
-type FileDownloadOutput struct {
-	URL     string            `json:"url"`
-	Headers map[string]string `json:"headers"`
-	Error   *ApiError         `json:"error"`
-}
-
 type RemoveObjectsInput struct {
 	Project string   `json:"project"`
 	Objects []string `json:"objects"`
@@ -155,31 +140,6 @@ type RemoveFolderOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-type FileNewInput struct {
-	Project string `json:"project"`
-	Folder  string `json:"folder"`
-	Parent  bool   `json:"parents"`
-	Name    string `json:"name"`
-}
-
-type FileNewOutput struct {
-	ID    string    `json:"id"`
-	Error *ApiError `json:"error"`
-}
-
-type FileUploadInput struct {
-	ID    string `json:"id"`
-	Size  int    `json:"size"`
-	MD5   string `json:"md5"`
-	Index int    `json:"index"`
-}
-
-type FileUploadOutput struct {
-	URL     string            `json:"url"`
-	Headers map[string]string `json:"headers"`
-	Error   *ApiError         `json:"error"`
-}
-
 type FindExecutionsInput struct {
 	Project   string `json:"project,omitempty"`
 	Class     string `json:"class,omitempty"`
@@ -199,30 +159,8 @@ type FindExecutionsOutput struct {
 	Error   *ApiError              `json:"error"`
 }
 
-type FileCloseInput struct {
-	ID string `json:"id"`
-}
-
-type FileCloseOutput struct {
-	Error *ApiError `json:"error"`
-}
-
 type FileDescribeInput struct {
 	ID string `json:"id"`
-}
-
-type FileDescribeOutput struct {
-	Folder string    `json:"folder"`
-	State  string    `json:"state"`
-	Name   string    `json:"name"`
-	Error  *ApiError `json:"error"`
-}
-
-type FindProjectsInput struct {
-	Name     any            `json:"name,omitempty"`
-	Level    string         `json:"level,omitempty"`
-	Starting string         `json:"starting,omitempty"`
-	Describe map[string]any `json:"describe"`
 }
 
 type FindProjectsOutput struct {
