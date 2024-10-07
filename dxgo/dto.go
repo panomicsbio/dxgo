@@ -21,27 +21,6 @@ func (e *ApiError) String() string {
 	return fmt.Sprintf("%s - %s, Details: %s", e.Type, e.Message, strings.Join(details, ", "))
 }
 
-type ProjectDescribeInput struct {
-	ID     string          `json:"id"`
-	Fields map[string]bool `json:"fields,omitempty"`
-}
-
-type ProjectDescribeOutput struct {
-	Name                 string         `json:"name"`
-	Folders              []string       `json:"folders"`
-	FileUploadParameters map[string]any `json:"fileUploadParameters"`
-	Error                *ApiError      `json:"error"`
-}
-
-type ProjectNewFolderInput struct {
-	ID     string `json:"id"`
-	Folder string `json:"folder"`
-}
-
-type ProjectNewFolderOutput struct {
-	Error *ApiError `json:"error"`
-}
-
 type DXAssetType string
 
 type FindDataObjectsScope struct {
@@ -119,27 +98,6 @@ type JobDescribeOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-type RemoveObjectsInput struct {
-	Project string   `json:"project"`
-	Objects []string `json:"objects"`
-	Force   bool     `json:"force"`
-}
-
-type RemoveObjectsOutput struct {
-	Error *ApiError `json:"error"`
-}
-
-type RemoveFolderInput struct {
-	Project string `json:"project"`
-	Folder  string `json:"folder"`
-	Force   bool   `json:"force"`
-	Recurse bool   `json:"recurse"`
-}
-
-type RemoveFolderOutput struct {
-	Error *ApiError `json:"error"`
-}
-
 type FindExecutionsInput struct {
 	Project   string `json:"project,omitempty"`
 	Class     string `json:"class,omitempty"`
@@ -158,6 +116,7 @@ type FindExecutionsOutput struct {
 	Next    string                 `json:"string"`
 	Error   *ApiError              `json:"error"`
 }
+
 type FindProjectsInput struct {
 	Name     any            `json:"name,omitempty"`
 	Level    string         `json:"level,omitempty"`
