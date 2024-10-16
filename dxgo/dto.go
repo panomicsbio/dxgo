@@ -21,25 +21,8 @@ func (e *ApiError) String() string {
 	return fmt.Sprintf("%s - %s, Details: %s", e.Type, e.Message, strings.Join(details, ", "))
 }
 
-type ProjectDescribeInput struct {
-	ID     string          `json:"id"`
-	Fields map[string]bool `json:"fields,omitempty"`
-}
-
-type ProjectDescribeOutput struct {
-	Name                 string         `json:"name"`
-	Folders              []string       `json:"folders"`
-	FileUploadParameters map[string]any `json:"fileUploadParameters"`
-	Error                *ApiError      `json:"error"`
-}
-
-type ProjectNewFolderInput struct {
-	ID     string `json:"id"`
-	Folder string `json:"folder"`
-}
-
-type ProjectNewFolderOutput struct {
-	Error *ApiError `json:"error"`
+func (e *ApiError) Error() string {
+	return e.String()
 }
 
 type DXAssetType string
@@ -55,125 +38,8 @@ type DXSortByOrdering string
 const Ascending DXSortByOrdering = "ascending"
 const Descending DXSortByOrdering = "descending"
 
-type FindDataObjectsSortBy struct {
-	Field    string           `json:"field"`
-	Ordering DXSortByOrdering `json:"ordering"`
-}
-
-type FindDataObjectsInput struct {
-	Name     any                    `json:"name,omitempty"`
-	Class    DXAssetType            `json:"class"`
-	Scope    *FindDataObjectsScope  `json:"scope,omitempty"`
-	SortBy   *FindDataObjectsSortBy `json:"sortBy,omitempty"`
-	Describe bool                   `json:"describe"`
-	Starting map[string]any         `json:"starting,omitempty"`
-}
-
-type FindDataObjectsResult struct {
-	Project  string         `json:"project"`
-	ID       string         `json:"id"`
-	Describe map[string]any `json:"describe"`
-}
-
-type FindDataObjectsOutput struct {
-	Results []*FindDataObjectsResult `json:"results"`
-	Next    map[string]any           `json:"next"`
-	Error   *ApiError                `json:"error"`
-}
-
 type SystemRequirementsValue struct {
 	InstanceType string `json:"instanceType"`
 }
 
 type SystemRequirements map[string]*SystemRequirementsValue
-
-type AppletRunInput struct {
-	ID                 string             `json:"id"`
-	Project            *string            `json:"project,omitempty"`
-	Input              map[string]any     `json:"input"`
-	SystemRequirements SystemRequirements `json:"systemRequirements"`
-	Properties         map[string]string  `json:"properties"`
-	Detach             bool               `json:"detach"`
-	HeadJobOnDemand    bool               `json:"headJobOnDemand"`
-}
-
-type AppletRunOutput struct {
-	ID    string    `json:"id"`
-	Error *ApiError `json:"error"`
-}
-
-type JobTerminateInput struct {
-	ID string `json:"id"`
-}
-
-type JobTerminateOutput struct {
-	Error *ApiError `json:"error"`
-}
-
-type JobDescribeInput struct {
-	ID string `json:"id"`
-}
-
-type JobDescribeOutput struct {
-	State string    `json:"state"`
-	Error *ApiError `json:"error"`
-}
-
-type RemoveObjectsInput struct {
-	Project string   `json:"project"`
-	Objects []string `json:"objects"`
-	Force   bool     `json:"force"`
-}
-
-type RemoveObjectsOutput struct {
-	Error *ApiError `json:"error"`
-}
-
-type RemoveFolderInput struct {
-	Project string `json:"project"`
-	Folder  string `json:"folder"`
-	Force   bool   `json:"force"`
-	Recurse bool   `json:"recurse"`
-}
-
-type RemoveFolderOutput struct {
-	Error *ApiError `json:"error"`
-}
-
-type FindExecutionsInput struct {
-	Project   string `json:"project,omitempty"`
-	Class     string `json:"class,omitempty"`
-	State     string `json:"state,omitempty"`
-	OriginJob string `json:"originJob,omitempty"`
-	Starting  string `json:"starting,omitempty"`
-}
-
-type FindExecutionResult struct {
-	ID       string         `json:"id"`
-	Describe map[string]any `json:"describe"`
-}
-
-type FindExecutionsOutput struct {
-	Results []*FindExecutionResult `json:"results"`
-	Next    string                 `json:"string"`
-	Error   *ApiError              `json:"error"`
-}
-type FindProjectsInput struct {
-	Name     any            `json:"name,omitempty"`
-	Level    string         `json:"level,omitempty"`
-	Starting string         `json:"starting,omitempty"`
-	Describe map[string]any `json:"describe"`
-}
-
-type FindProjectsOutput struct {
-	Results []*FindProjectsResult `json:"results"`
-	Next    string                `json:"next"`
-	Error   *ApiError             `json:"error"`
-}
-
-type FindProjectsResult struct {
-	ID       string         `json:"id"`
-	Level    string         `json:"level"`
-	Public   bool           `json:"public"`
-	Describe map[string]any `json:"describe"`
-}
