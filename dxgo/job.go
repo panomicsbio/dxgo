@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+type JobTerminateInput struct {
+	ID string `json:"id"`
+}
+
+type JobTerminateOutput struct {
+	Error *ApiError `json:"error"`
+}
+
 func (c *DXClient) JobTerminate(input JobTerminateInput, timeout time.Duration) (JobTerminateOutput, error) {
 	output := new(JobTerminateOutput)
 	err := c.DoInto(fmt.Sprintf("/%s/terminate", input.ID), input, output, timeout)
@@ -13,6 +21,15 @@ func (c *DXClient) JobTerminate(input JobTerminateInput, timeout time.Duration) 
 	}
 
 	return *output, nil
+}
+
+type JobDescribeInput struct {
+	ID string `json:"id"`
+}
+
+type JobDescribeOutput struct {
+	State string    `json:"state"`
+	Error *ApiError `json:"error"`
 }
 
 func (c *DXClient) JobDescribe(input JobDescribeInput, timeout time.Duration) (JobDescribeOutput, error) {
