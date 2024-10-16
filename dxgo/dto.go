@@ -21,6 +21,10 @@ func (e *ApiError) String() string {
 	return fmt.Sprintf("%s - %s, Details: %s", e.Type, e.Message, strings.Join(details, ", "))
 }
 
+func (e *ApiError) Error() string {
+	return e.String()
+}
+
 type DXAssetType string
 
 type FindDataObjectsScope struct {
