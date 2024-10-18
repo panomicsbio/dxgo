@@ -7,9 +7,9 @@ import (
 
 type CloneInput struct {
 	// (optional, required if folders is not provided) List of object IDs (strings of the form "class-xxxx") in the source container to be cloned
-	Objects []string `json:"objects"`
+	Objects []string `json:"objects,omitempty"`
 	// (optional, required if objects is not provided) List of folders in the source container to be cloned
-	Folders         []string `json:"folders"`
+	Folders         []string `json:"folders,omitempty"`
 	Project         string   `json:"project"`
 	DestinationPath string   `json:"destination"`
 	//  boolean (optional, default false) Whether the destination folder and/or parent folders should be created if they do not exist
