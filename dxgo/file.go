@@ -114,6 +114,6 @@ func (c *DXClient) FileDescribe(input FileDescribeInput, timeout time.Duration) 
 	return *output, nil
 }
 
-func (c *DXClient) FileClone(input CloneInput, timeout time.Duration) (CloneOutput, error) {
-	return c.Clone("file-xxxx", input, timeout)
+func (c *DXClient) FileClone(sourceProject string, input CloneInput, timeout time.Duration) (CloneOutput, error) {
+	return c.Clone(sourceProject, input, timeout)
 }
