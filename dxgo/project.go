@@ -38,7 +38,6 @@ func (c *DXClient) NewProject(input NewProjectInput, timeout time.Duration) (New
 }
 
 type ProjectDescribeInput struct {
-	ID     string          `json:"id"`
 	Fields map[string]bool `json:"fields,omitempty"`
 }
 
@@ -49,9 +48,9 @@ type ProjectDescribeOutput struct {
 	Error                *ApiError      `json:"error"`
 }
 
-func (c *DXClient) ProjectDescribe(input ProjectDescribeInput, timeout time.Duration) (ProjectDescribeOutput, error) {
+func (c *DXClient) ProjectDescribe(projectID string, input ProjectDescribeInput, timeout time.Duration) (ProjectDescribeOutput, error) {
 	output := new(ProjectDescribeOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/describe", input.ID), input, output, timeout)
+	err := c.DoInto(fmt.Sprintf("/%s/describe", projectID), input, output, timeout)
 	if err != nil {
 		return ProjectDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -60,7 +59,6 @@ func (c *DXClient) ProjectDescribe(input ProjectDescribeInput, timeout time.Dura
 }
 
 type ProjectNewFolderInput struct {
-	ID     string `json:"id"`
 	Folder string `json:"folder"`
 }
 
@@ -68,9 +66,9 @@ type ProjectNewFolderOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) ProjectNewFolder(input ProjectNewFolderInput, timeout time.Duration) (ProjectNewFolderOutput, error) {
+func (c *DXClient) ProjectNewFolder(projectID string, input ProjectNewFolderInput, timeout time.Duration) (ProjectNewFolderOutput, error) {
 	output := new(ProjectNewFolderOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/newFolder", input.ID), input, output, timeout)
+	err := c.DoInto(fmt.Sprintf("/%s/newFolder", projectID), input, output, timeout)
 	if err != nil {
 		return ProjectNewFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -79,7 +77,6 @@ func (c *DXClient) ProjectNewFolder(input ProjectNewFolderInput, timeout time.Du
 }
 
 type RemoveObjectsInput struct {
-	Project string   `json:"project"`
 	Objects []string `json:"objects"`
 	Force   bool     `json:"force"`
 }
@@ -88,9 +85,9 @@ type RemoveObjectsOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) RemoveObjects(input RemoveObjectsInput, timeout time.Duration) (RemoveObjectsOutput, error) {
+func (c *DXClient) RemoveObjects(projectID string, input RemoveObjectsInput, timeout time.Duration) (RemoveObjectsOutput, error) {
 	output := new(RemoveObjectsOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/removeObjects", input.Project), input, output, timeout)
+	err := c.DoInto(fmt.Sprintf("/%s/removeObjects", projectID), input, output, timeout)
 	if err != nil {
 		return RemoveObjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -99,7 +96,6 @@ func (c *DXClient) RemoveObjects(input RemoveObjectsInput, timeout time.Duration
 }
 
 type RemoveFolderInput struct {
-	Project string `json:"project"`
 	Folder  string `json:"folder"`
 	Force   bool   `json:"force"`
 	Recurse bool   `json:"recurse"`
@@ -109,11 +105,31 @@ type RemoveFolderOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) RemoveFolder(input RemoveFolderInput, timeout time.Duration) (RemoveFolderOutput, error) {
+func (c *DXClient) RemoveFolder(projectID string, input RemoveFolderInput, timeout time.Duration) (RemoveFolderOutput, error) {
 	output := new(RemoveFolderOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/removeFolder", input.Project), input, output, timeout)
+	err := c.DoInto(fmt.Sprintf("/%s/removeFolder", projectID), input, output, timeout)
 	if err != nil {
 		return RemoveFolderOutput{}, fmt.Errorf("doing request: %w", err)
+	}
+
+	return *output, nil
+}
+
+type DestroyProjectInput struct {
+	TerminateJobs bool `json:"terminateJobs"`
+}
+
+type DestroyProjectOutput struct {
+	ID    string    `json:"id"`
+	Error *ApiError `json:"error"`
+}
+
+func (c *DXClient) DestroyProject(projectID string, input DestroyProjectInput, timeout time.Duration) (DestroyProjectOutput, error) {
+	output := new(DestroyProjectOutput)
+
+	err := c.DoInto(fmt.Sprintf("/%s/destroy", projectID), input, output, timeout)
+	if err != nil {
+		return DestroyProjectOutput{}, fmt.Errorf("doing request: %w", err)
 	}
 
 	return *output, nil
