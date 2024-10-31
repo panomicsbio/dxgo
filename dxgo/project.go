@@ -134,3 +134,17 @@ func (c *DXClient) DestroyProject(projectID string, input DestroyProjectInput, t
 
 	return *output, nil
 }
+
+type SetProjectProperties struct {
+	ID         string            `json:"id"`
+	Properties map[string]string `json:"properties"`
+}
+
+func (c *DXClient) SetProjectProperties(projectID string, input SetProjectProperties, timeout time.Duration) error {
+	var output any
+	err := c.DoInto(fmt.Sprintf("/%s/setProperties", projectID), input, output, timeout)
+	if err != nil {
+		return fmt.Errorf("doing request: %w", err)
+	}
+	return nil
+}
