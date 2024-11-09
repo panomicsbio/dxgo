@@ -43,6 +43,7 @@ type ProjectDescribeInput struct {
 
 type ProjectDescribeOutput struct {
 	Name                 string         `json:"name"`
+	BillTo               string         `json:"billTo"`
 	Folders              []string       `json:"folders"`
 	FileUploadParameters map[string]any `json:"fileUploadParameters"`
 	Error                *ApiError      `json:"error"`
