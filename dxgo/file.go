@@ -1,8 +1,8 @@
 package dxgo
 
 import (
+	"context"
 	"fmt"
-	"time"
 )
 
 type FileDownloadInput struct {
@@ -20,9 +20,9 @@ type FileDownloadOutput struct {
 	Error   *ApiError         `json:"error"`
 }
 
-func (c *DXClient) FileDownload(input FileDownloadInput, timeout time.Duration) (FileDownloadOutput, error) {
+func (c *DXClient) FileDownload(ctx context.Context, input FileDownloadInput) (FileDownloadOutput, error) {
 	output := new(FileDownloadOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/download", input.ID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/download", input.ID), input, output)
 	if err != nil {
 		return FileDownloadOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -42,9 +42,9 @@ type FileNewOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) FileNew(input FileNewInput, timeout time.Duration) (FileNewOutput, error) {
+func (c *DXClient) FileNew(ctx context.Context, input FileNewInput) (FileNewOutput, error) {
 	output := new(FileNewOutput)
-	err := c.DoInto("/file/new", input, output, timeout)
+	err := c.DoInto(ctx, "/file/new", input, output)
 	if err != nil {
 		return FileNewOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -65,9 +65,9 @@ type FileUploadOutput struct {
 	Error   *ApiError         `json:"error"`
 }
 
-func (c *DXClient) FileUpload(input FileUploadInput, timeout time.Duration) (FileUploadOutput, error) {
+func (c *DXClient) FileUpload(ctx context.Context, input FileUploadInput) (FileUploadOutput, error) {
 	output := new(FileUploadOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/upload", input.ID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/upload", input.ID), input, output)
 	if err != nil {
 		return FileUploadOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -83,9 +83,9 @@ type FileCloseOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) FileClose(input FileCloseInput, timeout time.Duration) (FileCloseOutput, error) {
+func (c *DXClient) FileClose(ctx context.Context, input FileCloseInput) (FileCloseOutput, error) {
 	output := new(FileCloseOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/close", input.ID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/close", input.ID), input, output)
 	if err != nil {
 		return FileCloseOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -104,9 +104,9 @@ type FileDescribeOutput struct {
 	Error  *ApiError `json:"error"`
 }
 
-func (c *DXClient) FileDescribe(input FileDescribeInput, timeout time.Duration) (FileDescribeOutput, error) {
+func (c *DXClient) FileDescribe(ctx context.Context, input FileDescribeInput) (FileDescribeOutput, error) {
 	output := new(FileDescribeOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/describe", input.ID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/describe", input.ID), input, output)
 	if err != nil {
 		return FileDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -114,6 +114,6 @@ func (c *DXClient) FileDescribe(input FileDescribeInput, timeout time.Duration) 
 	return *output, nil
 }
 
-func (c *DXClient) FileClone(sourceProject string, input CloneInput, timeout time.Duration) (CloneOutput, error) {
-	return c.Clone(sourceProject, input, timeout)
+func (c *DXClient) FileClone(ctx context.Context, sourceProject string, input CloneInput) (CloneOutput, error) {
+	return c.Clone(ctx, sourceProject, input)
 }

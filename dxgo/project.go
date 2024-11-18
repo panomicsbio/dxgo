@@ -1,8 +1,8 @@
 package dxgo
 
 import (
+	"context"
 	"fmt"
-	"time"
 )
 
 type NewProjectInput struct {
@@ -27,9 +27,9 @@ type NewProjectOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) NewProject(input NewProjectInput, timeout time.Duration) (NewProjectOutput, error) {
+func (c *DXClient) NewProject(ctx context.Context, input NewProjectInput) (NewProjectOutput, error) {
 	output := new(NewProjectOutput)
-	err := c.DoInto("/project/new", input, output, timeout)
+	err := c.DoInto(ctx, "/project/new", input, output)
 	if err != nil {
 		return NewProjectOutput{}, err
 	}
@@ -48,9 +48,9 @@ type ProjectDescribeOutput struct {
 	Error                *ApiError      `json:"error"`
 }
 
-func (c *DXClient) ProjectDescribe(projectID string, input ProjectDescribeInput, timeout time.Duration) (ProjectDescribeOutput, error) {
+func (c *DXClient) ProjectDescribe(ctx context.Context, projectID string, input ProjectDescribeInput) (ProjectDescribeOutput, error) {
 	output := new(ProjectDescribeOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/describe", projectID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/describe", projectID), input, output)
 	if err != nil {
 		return ProjectDescribeOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -66,9 +66,9 @@ type ProjectNewFolderOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) ProjectNewFolder(projectID string, input ProjectNewFolderInput, timeout time.Duration) (ProjectNewFolderOutput, error) {
+func (c *DXClient) ProjectNewFolder(ctx context.Context, projectID string, input ProjectNewFolderInput) (ProjectNewFolderOutput, error) {
 	output := new(ProjectNewFolderOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/newFolder", projectID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/newFolder", projectID), input, output)
 	if err != nil {
 		return ProjectNewFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -85,9 +85,9 @@ type RemoveObjectsOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) RemoveObjects(projectID string, input RemoveObjectsInput, timeout time.Duration) (RemoveObjectsOutput, error) {
+func (c *DXClient) RemoveObjects(ctx context.Context, projectID string, input RemoveObjectsInput) (RemoveObjectsOutput, error) {
 	output := new(RemoveObjectsOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/removeObjects", projectID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/removeObjects", projectID), input, output)
 	if err != nil {
 		return RemoveObjectsOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -105,9 +105,9 @@ type RemoveFolderOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) RemoveFolder(projectID string, input RemoveFolderInput, timeout time.Duration) (RemoveFolderOutput, error) {
+func (c *DXClient) RemoveFolder(ctx context.Context, projectID string, input RemoveFolderInput) (RemoveFolderOutput, error) {
 	output := new(RemoveFolderOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/removeFolder", projectID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/removeFolder", projectID), input, output)
 	if err != nil {
 		return RemoveFolderOutput{}, fmt.Errorf("doing request: %w", err)
 	}
@@ -124,10 +124,10 @@ type DestroyProjectOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) DestroyProject(projectID string, input DestroyProjectInput, timeout time.Duration) (DestroyProjectOutput, error) {
+func (c *DXClient) DestroyProject(ctx context.Context, projectID string, input DestroyProjectInput) (DestroyProjectOutput, error) {
 	output := new(DestroyProjectOutput)
 
-	err := c.DoInto(fmt.Sprintf("/%s/destroy", projectID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/destroy", projectID), input, output)
 	if err != nil {
 		return DestroyProjectOutput{}, fmt.Errorf("doing request: %w", err)
 	}

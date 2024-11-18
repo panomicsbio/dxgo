@@ -56,8 +56,8 @@ func (c *DXClient) getBaseEndpoint() string {
 	return fmt.Sprintf("%s://%s:%s", c.config.ApiServerProtocol, c.config.ApiServerHost, c.config.ApiServerPort)
 }
 
-func (c *DXClient) DoInto(uri string, input any, output any, timeout time.Duration) error {
-	data, err := c.retryableRequest(uri, input, timeout)
+func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any) error {
+	data, err := c.retryableRequest(ctx, uri, input)
 	if err != nil {
 		return fmt.Errorf("making retryable request: %w", err)
 	}
@@ -70,13 +70,13 @@ func (c *DXClient) DoInto(uri string, input any, output any, timeout time.Durati
 	return nil
 }
 
-func (c *DXClient) retryableRequest(uri string, input interface{}, timeout time.Duration) ([]byte, error) {
+func (c *DXClient) retryableRequest(ctx context.Context, uri string, input interface{}) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
 		var err error
-		resp, err = c.request(uri, input, timeout)
+		resp, err = c.request(ctx, uri, input)
 		if err != nil {
-			slog.Log(context.TODO(), slog.LevelError, "error making request", slog.Any("err", err))
+			slog.Log(ctx, slog.LevelError, "error making request", slog.Any("err", err))
 		}
 		return err
 	}, retry.DelayType(retryDelay), retry.Attempts(c.config.MaxRetries))
@@ -87,15 +87,13 @@ func (c *DXClient) retryableRequest(uri string, input interface{}, timeout time.
 	return resp, nil
 }
 
-func (c *DXClient) request(uri string, input interface{}, timeout time.Duration) ([]byte, error) {
+func (c *DXClient) request(ctx context.Context, uri string, input interface{}) ([]byte, error) {
 	postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
 	data, err := json.Marshal(input)
 	if err != nil {
 		return nil, fmt.Errorf("marshalling request input: %w", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
 	r, err := http.NewRequestWithContext(ctx, "POST", postUrl, bytes.NewReader(data))
 	if err != nil {
 		return nil, fmt.Errorf("creating http request: %w", err)
@@ -113,7 +111,7 @@ func (c *DXClient) request(uri string, input interface{}, timeout time.Duration)
 	defer func() {
 		err := res.Body.Close()
 		if err != nil {
-			slog.LogAttrs(context.Background(), slog.LevelError, "closing response body", slog.Any("err", err))
+			slog.LogAttrs(ctx, slog.LevelError, "closing response body", slog.Any("err", err))
 		}
 	}()
 
