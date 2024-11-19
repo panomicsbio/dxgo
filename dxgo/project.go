@@ -141,9 +141,9 @@ type SetProjectProperties struct {
 	Properties map[string]string `json:"properties"`
 }
 
-func (c *DXClient) SetProjectProperties(projectID string, input SetProjectProperties, timeout time.Duration) error {
+func (c *DXClient) SetProjectProperties(ctx context.Context, projectID string, input SetProjectProperties) error {
 	var output any
-	err := c.DoInto(fmt.Sprintf("/%s/setProperties", projectID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/setProperties", projectID), input, output)
 	if err != nil {
 		return fmt.Errorf("doing request: %w", err)
 	}
