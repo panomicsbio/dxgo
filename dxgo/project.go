@@ -43,6 +43,7 @@ type ProjectDescribeInput struct {
 
 type ProjectDescribeOutput struct {
 	Name                 string         `json:"name"`
+	BillTo               string         `json:"billTo"`
 	Folders              []string       `json:"folders"`
 	FileUploadParameters map[string]any `json:"fileUploadParameters"`
 	Error                *ApiError      `json:"error"`
@@ -133,4 +134,18 @@ func (c *DXClient) DestroyProject(ctx context.Context, projectID string, input D
 	}
 
 	return *output, nil
+}
+
+type SetProjectProperties struct {
+	ID         string            `json:"id"`
+	Properties map[string]string `json:"properties"`
+}
+
+func (c *DXClient) SetProjectProperties(projectID string, input SetProjectProperties, timeout time.Duration) error {
+	var output any
+	err := c.DoInto(fmt.Sprintf("/%s/setProperties", projectID), input, output, timeout)
+	if err != nil {
+		return fmt.Errorf("doing request: %w", err)
+	}
+	return nil
 }
