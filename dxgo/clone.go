@@ -1,8 +1,8 @@
 package dxgo
 
 import (
+	"context"
 	"fmt"
-	"time"
 )
 
 type CloneInput struct {
@@ -23,9 +23,9 @@ type CloneOutput struct {
 	Error   *ApiError `json:"error"`
 }
 
-func (c *DXClient) Clone(class string, input CloneInput, timeout time.Duration) (CloneOutput, error) {
+func (c *DXClient) Clone(ctx context.Context, class string, input CloneInput) (CloneOutput, error) {
 	output := new(CloneOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/clone", class), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/clone", class), input, output)
 	if err != nil {
 		return CloneOutput{}, fmt.Errorf("doing request: %w", err)
 	}

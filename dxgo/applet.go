@@ -1,8 +1,8 @@
 package dxgo
 
 import (
+	"context"
 	"fmt"
-	"time"
 )
 
 type AppletRunInput struct {
@@ -20,9 +20,9 @@ type AppletRunOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) AppletRun(input AppletRunInput, timeout time.Duration) (AppletRunOutput, error) {
+func (c *DXClient) AppletRun(ctx context.Context, input AppletRunInput) (AppletRunOutput, error) {
 	output := new(AppletRunOutput)
-	err := c.DoInto(fmt.Sprintf("/%s/run", input.ID), input, output, timeout)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/run", input.ID), input, output)
 	if err != nil {
 		return AppletRunOutput{}, fmt.Errorf("doing request: %w", err)
 	}
