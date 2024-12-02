@@ -14,9 +14,9 @@ import (
 	"github.com/panomicsbio/utils"
 )
 
-type ReaderWithSize interface {
-	GetReader() io.Reader
-	GetSize() uint64
+type Part interface {
+	Reader() io.Reader
+	Size() uint64
 }
 
 // Determines the recommended size for the part upload. If desiredPartSize is negative, the value will be determined automatically.
@@ -48,8 +48,7 @@ func (c *DXClient) DeterminePartSize(ctx context.Context, projectId string, desi
 	return min(desiredPartSize, maxPartSize), nil
 }
 
-// Creates the file with the given chunked body. If chunkSize has a negative value
-func (c *DXClient) DoMultipartUpload(ctx context.Context, projectId, folder, objectName string, chunks iter.Seq2[ReaderWithSize, error], waitForClosing bool) error {
+func (c *DXClient) DoMultipartUpload(ctx context.Context, projectId, folder, objectName string, parts iter.Seq2[Part, error], waitForClosing bool) error {
 	fn, err := c.FileNew(ctx, FileNewInput{
 		Project: projectId,
 		Folder:  utils.SetPrefixSlash(folder),
@@ -68,20 +67,20 @@ func (c *DXClient) DoMultipartUpload(ctx context.Context, projectId, folder, obj
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}}
 
-	partNumebr := 1
-	for chunk, err := range chunks {
+	partNumber := 1
+	for part, err := range parts {
 		if err != nil {
 			return fmt.Errorf("could not get chunk: %w", err)
 		}
 
-		buf := make([]byte, chunk.GetSize())
-		n, err := io.ReadFull(chunk.GetReader(), buf)
+		buf := make([]byte, part.Size())
+		n, err := io.ReadFull(part.Reader(), buf)
 		if err != nil {
 			return fmt.Errorf("failed to read: %w", err)
 		}
 
-		if n != int(chunk.GetSize()) {
-			return fmt.Errorf("expected to read %d, but only read %d", chunk.GetSize(), n)
+		if n != int(part.Size()) {
+			return fmt.Errorf("expected to read %d, but only read %d", part.Size(), n)
 		}
 
 		md5 := utils.CreateMd5Hash(buf)
@@ -89,7 +88,7 @@ func (c *DXClient) DoMultipartUpload(ctx context.Context, projectId, folder, obj
 			ID:    fn.ID,
 			Size:  n,
 			MD5:   md5,
-			Index: partNumebr,
+			Index: partNumber,
 		})
 		if err != nil {
 			return fmt.Errorf("uploading file: %w", err)
@@ -130,6 +129,8 @@ func (c *DXClient) DoMultipartUpload(ctx context.Context, projectId, folder, obj
 		if err != nil {
 			return fmt.Errorf("retrying request: %w", err)
 		}
+
+		partNumber += 1
 	}
 
 	fc, err := c.FileClose(ctx, FileCloseInput{ID: fn.ID})
