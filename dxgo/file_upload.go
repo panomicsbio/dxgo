@@ -48,7 +48,7 @@ func (c *DXClient) DeterminePartSize(ctx context.Context, projectId string, desi
 	return min(desiredPartSize, maxPartSize), nil
 }
 
-func (c *DXClient) DoMultipartUpload(ctx context.Context, projectId, folder, objectName string, parts iter.Seq2[Part, error], waitForClosing bool) error {
+func DoMultipartUpload[T Part](ctx context.Context, c *DXClient, projectId, folder, objectName string, parts iter.Seq2[T, error], waitForClosing bool) error {
 	fn, err := c.FileNew(ctx, FileNewInput{
 		Project: projectId,
 		Folder:  utils.SetPrefixSlash(folder),
