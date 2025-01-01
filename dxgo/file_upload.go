@@ -17,6 +17,7 @@ import (
 type Part interface {
 	Reader() io.Reader
 	Size() uint64
+	PartNumber() uint64
 }
 
 // Determines the recommended size for the part upload. If desiredPartSize is negative, the value will be determined automatically.
@@ -67,7 +68,6 @@ func DoMultipartUpload[T Part](ctx context.Context, c *DXClient, projectId, fold
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}}
 
-	partNumber := 1
 	for part, err := range parts {
 		if err != nil {
 			return fmt.Errorf("could not get chunk: %w", err)
@@ -88,7 +88,7 @@ func DoMultipartUpload[T Part](ctx context.Context, c *DXClient, projectId, fold
 			ID:    fn.ID,
 			Size:  n,
 			MD5:   md5,
-			Index: partNumber,
+			Index: int(part.PartNumber()),
 		})
 		if err != nil {
 			return fmt.Errorf("uploading file: %w", err)
@@ -129,8 +129,6 @@ func DoMultipartUpload[T Part](ctx context.Context, c *DXClient, projectId, fold
 		if err != nil {
 			return fmt.Errorf("retrying request: %w", err)
 		}
-
-		partNumber += 1
 	}
 
 	fc, err := c.FileClose(ctx, FileCloseInput{ID: fn.ID})
