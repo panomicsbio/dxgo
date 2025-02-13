@@ -43,7 +43,7 @@ func (c *DXClient) DeterminePartSize(ctx context.Context, projectId string, desi
 	}
 
 	if desiredPartSize < minPartSize {
-		return -1, fmt.Errorf("Cannot upload parts of size %d, the minimum part size is %d", desiredPartSize, minPartSize)
+		return -1, fmt.Errorf("cannot upload parts of size %d, the minimum part size is %d", desiredPartSize, minPartSize)
 	}
 
 	return min(desiredPartSize, maxPartSize), nil
