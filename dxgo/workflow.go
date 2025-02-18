@@ -42,8 +42,9 @@ type WorkflowStage struct {
 
 // WorkflowNewOutput represents the output from creating a new workflow
 type WorkflowNewOutput struct {
-	ID          string `json:"id"`
-	EditVersion int    `json:"editVersion"`
+	ID          string    `json:"id"`
+	EditVersion int       `json:"editVersion"`
+	Error       *ApiError `json:"error"`
 }
 
 // WorkflowAddStageInput represents the input for adding a stage to a workflow
@@ -61,9 +62,10 @@ type WorkflowAddStageInput struct {
 
 // WorkflowAddStageOutput represents the output from adding a stage
 type WorkflowAddStageOutput struct {
-	ID          string `json:"id"`
-	EditVersion int    `json:"editVersion"`
-	Stage       string `json:"stage"`
+	ID          string    `json:"id"`
+	EditVersion int       `json:"editVersion"`
+	Stage       string    `json:"stage"`
+	Error       *ApiError `json:"error"`
 }
 
 // WorkflowDescribeOutput represents the output from describing a workflow
@@ -78,6 +80,7 @@ type WorkflowDescribeOutput struct {
 	Modified    int64             `json:"modified"`
 	Properties  map[string]string `json:"properties"`
 	Tags        []string          `json:"tags"`
+	Error       *ApiError         `json:"error"`
 }
 
 // WorkflowRunInput represents the input for running a workflow
@@ -99,8 +102,9 @@ type WorkflowRunInput struct {
 
 // WorkflowRunOutput represents the output from running a workflow
 type WorkflowRunOutput struct {
-	ID     string   `json:"id"`
-	Stages []string `json:"stages"`
+	ID     string    `json:"id"`
+	Stages []string  `json:"stages"`
+	Error  *ApiError `json:"error"`
 }
 
 // ExecutionPolicy represents the execution policy for a workflow stage
