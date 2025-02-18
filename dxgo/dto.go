@@ -27,6 +27,12 @@ func (e *ApiError) Error() string {
 
 type DXAssetType string
 
+const (
+	DXAssetTypeApplet   DXAssetType = "applet"
+	DXAssetTypeWorkflow DXAssetType = "workflow"
+	DXAssetTypeFile     DXAssetType = "file"
+)
+
 type FindDataObjectsScope struct {
 	Project *string `json:"project"`
 	Folder  *string `json:"folder"`
