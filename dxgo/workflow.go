@@ -117,6 +117,25 @@ type ExecutionPolicy struct {
 	OnNonRestartableFailure *string        `json:"onNonRestartableFailure,omitempty"` // Action to take on non-restartable failure
 }
 
+// WorkflowUpdateInput represents the input for updating a workflow
+type WorkflowUpdateInput struct {
+	EditVersion  int              `json:"editVersion"`            // Current version of the workflow
+	Title        *string          `json:"title,omitempty"`        // Title of the workflow
+	Summary      *string          `json:"summary,omitempty"`      // A short description of the workflow
+	Description  *string          `json:"description,omitempty"`  // A longer description of the workflow
+	OutputFolder *string          `json:"outputFolder,omitempty"` // The default output folder for the workflow
+	Inputs       []map[string]any `json:"inputs,omitempty"`       // Input for the workflow described at https://documentation.dnanexus.com/developer/api/running-analyses/io-and-run-specifications#input-specification.
+	Outputs      []map[string]any `json:"outputs,omitempty"`      // Output for the workflow described at https://documentation.dnanexus.com/developer/api/running-analyses/io-and-run-specifications#output-specification.
+	Stages       []WorkflowStage  `json:"stages,omitempty"`       // Initial stages of the workflow
+}
+
+// WorkflowUpdateOutput represents the output from updating a workflow
+type WorkflowUpdateOutput struct {
+	ID          string    `json:"id"`
+	EditVersion int       `json:"editVersion"`
+	Error       *ApiError `json:"error"`
+}
+
 func (c *DXClient) WorkflowNew(ctx context.Context, input WorkflowNewInput) (WorkflowNewOutput, error) {
 	output := new(WorkflowNewOutput)
 	err := c.DoInto(ctx, "/workflow/new", input, output)
@@ -152,6 +171,16 @@ func (c *DXClient) WorkflowRun(ctx context.Context, workflowID string, input Wor
 	err := c.DoInto(ctx, fmt.Sprintf("/%s/run", workflowID), input, output)
 	if err != nil {
 		return WorkflowRunOutput{}, fmt.Errorf("running workflow: %w", err)
+	}
+
+	return *output, nil
+}
+
+func (c *DXClient) WorkflowUpdate(ctx context.Context, workflowID string, input WorkflowUpdateInput) (WorkflowUpdateOutput, error) {
+	output := new(WorkflowUpdateOutput)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/update", workflowID), input, output)
+	if err != nil {
+		return WorkflowUpdateOutput{}, fmt.Errorf("updating workflow: %w", err)
 	}
 
 	return *output, nil
