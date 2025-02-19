@@ -21,6 +21,8 @@ type WorkflowNewInput struct {
 	Hidden       *bool             `json:"hidden,omitempty"`       // Whether the workflow should be hidden
 	Properties   map[string]string `json:"properties,omitempty"`   // Properties to associate with the workflow
 	Details      map[string]any    `json:"details,omitempty"`      // Details about the workflow
+	Inputs       []map[string]any  `json:"inputs,omitempty"`       // Input for the workflow described at https://documentation.dnanexus.com/developer/api/running-analyses/io-and-run-specifications#input-specification.
+	Outputs      []map[string]any  `json:"outputs,omitempty"`      // Output for the workflow described at https://documentation.dnanexus.com/developer/api/running-analyses/io-and-run-specifications#output-specification.
 	Folder       *string           `json:"folder,omitempty"`       // Folder path where the workflow should be created
 	Parents      *bool             `json:"parents,omitempty"`      // Whether to create parent folders if they don't exist
 	Stages       []WorkflowStage   `json:"stages,omitempty"`       // Initial stages of the workflow
@@ -87,7 +89,7 @@ type WorkflowDescribeOutput struct {
 // Input is required and must contain all required inputs for each stage
 type WorkflowRunInput struct {
 	Name                      *string            `json:"name,omitempty"`                      // Name for the analysis
-	Input                     map[string]any     `json:"input"`                               // Input hash for all workflow stages
+	Input                     map[string]any     `json:"input"`                               // Input for the analysis is launched with workflow run
 	Project                   *string            `json:"project,omitempty"`                   // Project context for the run
 	Folder                    *string            `json:"folder,omitempty"`                    // Default output folder
 	StageFolders              map[string]string  `json:"stageFolders,omitempty"`              // Per-stage output folders
