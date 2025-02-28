@@ -41,11 +41,15 @@ func (c *DXClient) FindDataObjects(ctx context.Context, input FindDataObjectsInp
 }
 
 type FindExecutionsInput struct {
-	Project   string `json:"project,omitempty"`
-	Class     string `json:"class,omitempty"`
-	State     string `json:"state,omitempty"`
-	OriginJob string `json:"originJob,omitempty"`
-	Starting  string `json:"starting,omitempty"`
+	Project        string `json:"project,omitempty"`
+	Class          string `json:"class,omitempty"`
+	State          string `json:"state,omitempty"`
+	OriginJob      string `json:"originJob,omitempty"`
+	Starting       string `json:"starting,omitempty"`
+	ParentAnalysis string `json:"parentAnalysis,omitempty"`
+	ParentJob      string `json:"parentJob,omitempty"`
+	IncludeSubjobs bool   `json:"includeSubjobs,omitempty"`
+	LaunchedBy     string `json:"launchedBy,omitempty"`
 }
 
 type FindExecutionResult struct {
