@@ -65,14 +65,8 @@ type WorkflowMetadata struct {
 
 // AnalysisStage represents metadata about a stage execution
 type AnalysisStage struct {
-	ID        string        `json:"id"`        // Stage ID
-	Execution ExecutionInfo `json:"execution"` // Execution information
-}
-
-// ExecutionInfo represents information about stage execution
-type ExecutionInfo struct {
-	ID      string         `json:"id"`      // Execution ID
-	Details map[string]any `json:"details"` // Additional execution details
+	ID        string         `json:"id"`        // Stage ID
+	Execution map[string]any `json:"execution"` // Execution information
 }
 
 // AnalysisTerminateOutput represents the output from terminating an analysis
