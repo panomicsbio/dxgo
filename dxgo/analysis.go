@@ -7,8 +7,8 @@ import (
 
 // AnalysisDescribeInput represents the input parameters for describing an analysis
 type AnalysisDescribeInput struct {
-	DefaultFields *bool           `json:"defaultFields,omitempty"` // Whether to include default fields
-	Fields        map[string]bool `json:"fields,omitempty"`        // Specific fields to include/exclude
+	DefaultFields *bool          `json:"defaultFields,omitempty"` // Whether to include default fields
+	Fields        map[string]any `json:"fields,omitempty"`        // Specific fields to include/exclude
 }
 
 // AnalysisDescribeOutput represents the output from describing an analysis
