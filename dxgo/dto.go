@@ -52,21 +52,27 @@ type CreatedBy struct {
 
 // RunSpec represents the execution specification for an applet or app
 type RunSpec struct {
-	Code                   string             `json:"code"`
-	Interpreter            string             `json:"interpreter"`
-	Distribution           string             `json:"distribution,omitempty"`
-	Release                string             `json:"release,omitempty"`
-	Version                string             `json:"version,omitempty"`
-	RestartableEntryPoints bool               `json:"restartableEntryPoints,omitempty"`
-	SystemRequirements     SystemRequirements `json:"systemRequirements,omitempty"`
-	TimeoutPolicy          *TimeoutPolicy     `json:"timeoutPolicy,omitempty"`
+	Code                   string                        `json:"code"`
+	Interpreter            string                        `json:"interpreter"`
+	Distribution           string                        `json:"distribution,omitempty"`
+	Release                string                        `json:"release,omitempty"`
+	Version                string                        `json:"version,omitempty"`
+	RestartableEntryPoints bool                          `json:"restartableEntryPoints,omitempty"`
+	SystemRequirements     map[string]SystemRequirements `json:"systemRequirements,omitempty"`
+	TimeoutPolicy          *TimeoutPolicy                `json:"timeoutPolicy,omitempty"`
 }
 
 // TimeoutPolicy represents the timeout configuration for an execution
 type TimeoutPolicy struct {
-	Hours   *int `json:"*,omitempty"`
-	Main    *int `json:"main,omitempty"`
-	Default *int `json:"default,omitempty"`
+	NotSpecified *TimeoutPolicyValue `json:"*,omitempty"`
+	Main         *TimeoutPolicyValue `json:"main,omitempty"`
+	Default      *TimeoutPolicyValue `json:"default,omitempty"`
+}
+
+type TimeoutPolicyValue struct {
+	Days    *int `json:"days,omitempty"`
+	Hours   *int `json:"hours,omitempty"`
+	Minutes *int `json:"minutes,omitempty"`
 }
 
 // IOSpec represents input/output specifications for an applet or app
@@ -96,13 +102,19 @@ type Access struct {
 
 // SystemRequirements represents specific computational resource requirements
 type SystemRequirements struct {
-	InstanceType string                                  `json:"instanceType,omitempty"`
-	ClusterSpec  string                                  `json:"clusterSpec,omitempty"`
-	EntryPoints  map[string]SystemRequirementsEntryPoint `json:"entryPoints,omitempty"`
+	InstanceType string       `json:"instanceType,omitempty"`
+	ClusterSpec  *ClusterSpec `json:"clusterSpec,omitempty"`
+	FpgaDriver   *string      `json:"fpgaDriver,omitempty"`
+	NvidiaDriver *string      `json:"nvidiaDriver,omitempty"`
 }
 
-// SystemRequirementEntryPoint represents requirements for a specific entry point
-type SystemRequirementsEntryPoint struct {
-	InstanceType string `json:"instanceType,omitempty"`
-	ClusterSpec  string `json:"clusterSpec,omitempty"`
+// ClusterSpec indicates that this job requires a cluster of instances rather than just a single worker node
+type ClusterSpec struct {
+	// The type of cluster, supported values are: dxspark, apachespark, and generic
+	Type *string `json:"type,omitempty"`
+	// Requested version for dxspark or apachespark clusters. Supported values are: 2.4.4, 3.2.3
+	Version              *string `json:"version,omitempty"`
+	InitialInstanceCount *string `json:"initialInstanceCount,omitempty"`
+	Ports                *string `json:"ports,omitempty"`
+	BootstrapScript      *string `json:"bootstrapScript,omitempty"`
 }
