@@ -62,7 +62,7 @@ type AppletGetOutput struct {
 
 func (c *DXClient) AppletGet(ctx context.Context, appletID string) (AppletGetOutput, error) {
 	output := new(AppletGetOutput)
-	err := c.DoInto(ctx, fmt.Sprintf("/%s/get", appletID), nil, output)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/get", appletID), map[string]any{}, output)
 	if err != nil {
 		return AppletGetOutput{}, fmt.Errorf("getting applet: %w", err)
 	}
