@@ -35,6 +35,7 @@ type FileNewInput struct {
 	Folder  string `json:"folder"`
 	Parent  bool   `json:"parents"`
 	Name    string `json:"name"`
+	Media   string `json:"media"`
 }
 
 type FileNewOutput struct {
@@ -101,6 +102,7 @@ type FileDescribeOutput struct {
 	Folder string    `json:"folder"`
 	State  string    `json:"state"`
 	Name   string    `json:"name"`
+	Media  string    `json:"media"`
 	Size   uint64    `json:"size"`
 	Error  *ApiError `json:"error"`
 }
