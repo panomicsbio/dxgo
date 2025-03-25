@@ -35,6 +35,7 @@ type FileNewInput struct {
 	Folder  string `json:"folder"`
 	Parent  bool   `json:"parents"`
 	Name    string `json:"name"`
+	Media   string `json:"media"`
 }
 
 type FileNewOutput struct {
