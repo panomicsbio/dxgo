@@ -3,6 +3,7 @@ package dxgo
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 type FileDownloadInput struct {
@@ -99,12 +100,13 @@ type FileDescribeInput struct {
 }
 
 type FileDescribeOutput struct {
-	Folder string    `json:"folder"`
-	State  string    `json:"state"`
-	Name   string    `json:"name"`
-	Media  string    `json:"media"`
-	Size   uint64    `json:"size"`
-	Error  *ApiError `json:"error"`
+	Folder  string    `json:"folder"`
+	State   string    `json:"state"`
+	Name    string    `json:"name"`
+	Media   string    `json:"media"`
+	Size    uint64    `json:"size"`
+	Created time.Time `json:"created"`
+	Error   *ApiError `json:"error"`
 }
 
 func (c *DXClient) FileDescribe(ctx context.Context, input FileDescribeInput) (FileDescribeOutput, error) {
