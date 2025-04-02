@@ -3,7 +3,6 @@ package dxgo
 import (
 	"context"
 	"fmt"
-	"time"
 )
 
 type FileDownloadInput struct {
@@ -105,7 +104,7 @@ type FileDescribeOutput struct {
 	Name    string    `json:"name"`
 	Media   string    `json:"media"`
 	Size    uint64    `json:"size"`
-	Created time.Time `json:"created"`
+	Created uint64    `json:"created"`
 	Error   *ApiError `json:"error"`
 }
 
