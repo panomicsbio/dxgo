@@ -12,7 +12,7 @@ type FindDataObjectsSortBy struct {
 
 type FindDataObjectsInput struct {
 	Name     any                    `json:"name,omitempty"`
-	Class    DXAssetType            `json:"class"`
+	Class    DXAssetType            `json:"class,omitempty"`
 	Scope    *FindDataObjectsScope  `json:"scope,omitempty"`
 	SortBy   *FindDataObjectsSortBy `json:"sortBy,omitempty"`
 	Describe bool                   `json:"describe"`
