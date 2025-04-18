@@ -52,14 +52,14 @@ type CreatedBy struct {
 
 // RunSpec represents the execution specification for an applet or app
 type RunSpec struct {
-	Code                   string                        `json:"code"`
-	Interpreter            string                        `json:"interpreter"`
-	Distribution           string                        `json:"distribution,omitempty"`
-	Release                string                        `json:"release,omitempty"`
-	Version                string                        `json:"version,omitempty"`
-	RestartableEntryPoints bool                          `json:"restartableEntryPoints,omitempty"`
-	SystemRequirements     map[string]SystemRequirements `json:"systemRequirements,omitempty"`
-	TimeoutPolicy          *TimeoutPolicy                `json:"timeoutPolicy,omitempty"`
+	Code                   string             `json:"code"`
+	Interpreter            string             `json:"interpreter"`
+	Distribution           string             `json:"distribution,omitempty"`
+	Release                string             `json:"release,omitempty"`
+	Version                string             `json:"version,omitempty"`
+	RestartableEntryPoints bool               `json:"restartableEntryPoints,omitempty"`
+	SystemRequirements     SystemRequirements `json:"systemRequirements,omitempty"`
+	TimeoutPolicy          *TimeoutPolicy     `json:"timeoutPolicy,omitempty"`
 }
 
 // TimeoutPolicy represents the timeout configuration for an execution
@@ -100,8 +100,12 @@ type Access struct {
 	Permissions   map[string]string `json:"permissions,omitempty"`
 }
 
+const SystemRequirementsAllEntryPoints = "*"
+
 // SystemRequirements represents specific computational resource requirements
-type SystemRequirements struct {
+type SystemRequirements map[string]SystemRequirementsEntry
+
+type SystemRequirementsEntry struct {
 	InstanceType string       `json:"instanceType,omitempty"`
 	ClusterSpec  *ClusterSpec `json:"clusterSpec,omitempty"`
 	FpgaDriver   *string      `json:"fpgaDriver,omitempty"`
