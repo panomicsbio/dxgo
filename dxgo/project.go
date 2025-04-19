@@ -116,6 +116,28 @@ func (c *DXClient) RemoveFolder(ctx context.Context, projectID string, input Rem
 	return *output, nil
 }
 
+type MoveObjectsInput struct {
+	Objects     []string `json:"objects,omitempty"`
+	Folders     []string `json:"folders,omitempty"`
+	Destination string   `json:"destination"`
+}
+
+type MoveObjectsOutput struct {
+	ID    string    `json:"id"`
+	Error *ApiError `json:"error"`
+}
+
+func (c *DXClient) MoveObjects(ctx context.Context, projectID string, input MoveObjectsInput) (MoveObjectsOutput, error) {
+	output := new(MoveObjectsOutput)
+
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/move", projectID), input, output)
+	if err != nil {
+		return MoveObjectsOutput{}, fmt.Errorf("doing request: %w", err)
+	}
+
+	return *output, nil
+}
+
 type DestroyProjectInput struct {
 	TerminateJobs bool `json:"terminateJobs"`
 }
