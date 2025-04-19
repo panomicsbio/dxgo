@@ -61,6 +61,8 @@ func (c *DXClient) ProjectDescribe(ctx context.Context, projectID string, input 
 
 type ProjectNewFolderInput struct {
 	Folder string `json:"folder"`
+	// Parents (optional, default false) Whether the parent folders should be created if they do not exist.
+	Parents bool `json:"parents,omitempty"`
 }
 
 type ProjectNewFolderOutput struct {
