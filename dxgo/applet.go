@@ -57,7 +57,7 @@ type AppletGetOutput struct {
 	InputSpec      []IOSpec          `json:"inputSpec,omitempty"`
 	OutputSpec     []IOSpec          `json:"outputSpec,omitempty"`
 	Properties     map[string]string `json:"properties,omitempty"`
-	Details        interface{}       `json:"details,omitempty"`
+	Details        any               `json:"details,omitempty"`
 }
 
 func (c *DXClient) AppletGet(ctx context.Context, appletID string) (AppletGetOutput, error) {

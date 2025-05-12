@@ -6,18 +6,25 @@ import (
 )
 
 type ApiError struct {
-	Type    string            `json:"type"`
-	Message string            `json:"message"`
-	Details map[string]string `json:"details"`
+	Type    string `json:"type"`
+	Message string `json:"message"`
+	Details any    `json:"details"`
 }
 
 func (e *ApiError) String() string {
-	var details = make([]string, len(e.Details))
-	idx := 0
-	for k, v := range e.Details {
-		details[idx] = fmt.Sprintf("%s=%s", k, v)
-		idx++
+	var details = make([]string, 0)
+
+	switch v := e.Details.(type) {
+	case map[string]any:
+		for k, v := range v {
+			details = append(details, fmt.Sprintf("%s=%s", k, v))
+		}
+	case []any:
+		for _, v := range v {
+			details = append(details, fmt.Sprintf("%v", v))
+		}
 	}
+
 	return fmt.Sprintf("%s - %s, Details: %s", e.Type, e.Message, strings.Join(details, ", "))
 }
 
