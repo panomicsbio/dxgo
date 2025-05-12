@@ -70,7 +70,7 @@ func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any
 	return nil
 }
 
-func (c *DXClient) retryableRequest(ctx context.Context, uri string, input interface{}) ([]byte, error) {
+func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
 		var err error
@@ -87,7 +87,7 @@ func (c *DXClient) retryableRequest(ctx context.Context, uri string, input inter
 	return resp, nil
 }
 
-func (c *DXClient) request(ctx context.Context, uri string, input interface{}) ([]byte, error) {
+func (c *DXClient) request(ctx context.Context, uri string, input any) ([]byte, error) {
 	postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
 	data, err := json.Marshal(input)
 	if err != nil {
