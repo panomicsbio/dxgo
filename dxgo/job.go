@@ -24,8 +24,8 @@ func (c *DXClient) JobTerminate(ctx context.Context, input JobTerminateInput) (J
 }
 
 type JobDescribeInput struct {
-	ID     string   `json:"id"`
-	Fields []string `json:"fields"`
+	ID     string          `json:"id"`
+	Fields map[string]bool `json:"fields"`
 }
 
 type JobDescribeOutput struct {
