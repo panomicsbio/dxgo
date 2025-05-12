@@ -24,12 +24,17 @@ func (c *DXClient) JobTerminate(ctx context.Context, input JobTerminateInput) (J
 }
 
 type JobDescribeInput struct {
-	ID string `json:"id"`
+	ID     string   `json:"id"`
+	Fields []string `json:"fields"`
 }
 
 type JobDescribeOutput struct {
-	State string    `json:"state"`
-	Error *ApiError `json:"error"`
+	ID     string         `json:"id"`
+	Name   string         `json:"name"`
+	State  string         `json:"state"`
+	Input  map[string]any `json:"input"`
+	Output map[string]any `json:"output"`
+	Error  *ApiError      `json:"error"`
 }
 
 func (c *DXClient) JobDescribe(ctx context.Context, input JobDescribeInput) (JobDescribeOutput, error) {
