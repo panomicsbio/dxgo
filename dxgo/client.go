@@ -62,9 +62,11 @@ func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any
 		return fmt.Errorf("making retryable request: %w", err)
 	}
 
-	err = json.Unmarshal(data, output)
-	if err != nil {
-		return fmt.Errorf("unmarshalling data: %w", err)
+	if output != nil {
+		err = json.Unmarshal(data, output)
+		if err != nil {
+			return fmt.Errorf("unmarshalling data: %w", err)
+		}
 	}
 
 	return nil
