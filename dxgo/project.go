@@ -166,8 +166,7 @@ type SetProjectProperties struct {
 }
 
 func (c *DXClient) SetProjectProperties(ctx context.Context, projectID string, input SetProjectProperties) error {
-	var output any
-	err := c.DoInto(ctx, fmt.Sprintf("/%s/setProperties", projectID), input, output)
+	err := c.DoInto(ctx, fmt.Sprintf("/%s/setProperties", projectID), input, nil)
 	if err != nil {
 		return fmt.Errorf("doing request: %w", err)
 	}
