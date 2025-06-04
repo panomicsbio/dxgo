@@ -57,7 +57,7 @@ func (c *DXClient) getBaseEndpoint() string {
 }
 
 func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any) error {
-	data, err := c.retryableRequest(ctx, uri, input)
+	data, err := c.retryableRequest(ctx, uri, input, nil)
 	if err != nil {
 		return fmt.Errorf("making retryable request: %w", err)
 	}
@@ -72,11 +72,27 @@ func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any
 	return nil
 }
 
-func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any) ([]byte, error) {
+func (c *DXClient) DoIntoWithHeaders(ctx context.Context, uri string, input any, output any, headers map[string]string) error {
+	data, err := c.retryableRequest(ctx, uri, input, headers)
+	if err != nil {
+		return fmt.Errorf("making retryable request: %w", err)
+	}
+
+	if output != nil {
+		err = json.Unmarshal(data, output)
+		if err != nil {
+			return fmt.Errorf("unmarshalling data: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any, headers map[string]string) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
 		var err error
-		resp, err = c.request(ctx, uri, input)
+		resp, err = c.request(ctx, uri, input, headers)
 		if err != nil {
 			slog.Log(ctx, slog.LevelError, "error making request", slog.Any("err", err))
 		}
@@ -89,7 +105,7 @@ func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any) 
 	return resp, nil
 }
 
-func (c *DXClient) request(ctx context.Context, uri string, input any) ([]byte, error) {
+func (c *DXClient) request(ctx context.Context, uri string, input any, headers map[string]string) ([]byte, error) {
 	postUrl := fmt.Sprintf("%s%s", c.getBaseEndpoint(), uri)
 	data, err := json.Marshal(input)
 	if err != nil {
@@ -102,6 +118,9 @@ func (c *DXClient) request(ctx context.Context, uri string, input any) ([]byte, 
 	}
 
 	r.Header.Add("Authorization", fmt.Sprintf("%s %s", c.config.DXSecurityContext.AuthTokenType, c.config.DXSecurityContext.AuthToken))
+	for k, v := range headers {
+		r.Header.Add(k, v)
+	}
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
