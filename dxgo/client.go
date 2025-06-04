@@ -22,8 +22,6 @@ type DXSecurityContext struct {
 }
 
 type DXClientConfig struct {
-	PublicApiOrigin string
-
 	ApiServerProtocol string
 	ApiServerHost     string
 	ApiServerPort     string
@@ -42,7 +40,6 @@ func NewClient(maxRetries uint) (*DXClient, error) {
 		return nil, err
 	}
 	return &DXClient{config: &DXClientConfig{
-		PublicApiOrigin:   "https://api.dnanexus.com",
 		ApiServerProtocol: os.Getenv("DX_APISERVER_PROTOCOL"),
 		ApiServerHost:     os.Getenv("DX_APISERVER_HOST"),
 		ApiServerPort:     os.Getenv("DX_APISERVER_PORT"),
@@ -60,7 +57,7 @@ func (c *DXClient) getBaseOrigin() string {
 }
 
 func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any) error {
-	data, err := c.retryableRequest(ctx, uri, input, DXClientOptions{})
+	data, err := c.retryableRequest(ctx, uri, input, DXRequestOptions{})
 	if err != nil {
 		return fmt.Errorf("making retryable request: %w", err)
 	}
@@ -75,12 +72,11 @@ func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any
 	return nil
 }
 
-type DXClientOptions struct {
-	PublicApi bool
-	Headers   map[string]string
+type DXRequestOptions struct {
+	Headers map[string]string
 }
 
-func (c *DXClient) DoIntoWithOptions(ctx context.Context, uri string, input any, output any, options DXClientOptions) error {
+func (c *DXClient) DoIntoWithOptions(ctx context.Context, uri string, input any, output any, options DXRequestOptions) error {
 	data, err := c.retryableRequest(ctx, uri, input, options)
 	if err != nil {
 		return fmt.Errorf("making retryable request: %w", err)
@@ -96,7 +92,7 @@ func (c *DXClient) DoIntoWithOptions(ctx context.Context, uri string, input any,
 	return nil
 }
 
-func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any, options DXClientOptions) ([]byte, error) {
+func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any, options DXRequestOptions) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
 		var err error
@@ -113,12 +109,8 @@ func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any, 
 	return resp, nil
 }
 
-func (c *DXClient) request(ctx context.Context, uri string, input any, options DXClientOptions) ([]byte, error) {
+func (c *DXClient) request(ctx context.Context, uri string, input any, options DXRequestOptions) ([]byte, error) {
 	postUrl := fmt.Sprintf("%s%s", c.getBaseOrigin(), uri)
-	if options.PublicApi {
-		postUrl = fmt.Sprintf("%s%s", c.config.PublicApiOrigin, uri)
-	}
-
 	data, err := json.Marshal(input)
 	if err != nil {
 		return nil, fmt.Errorf("marshalling request input: %w", err)

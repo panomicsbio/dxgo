@@ -43,19 +43,17 @@ type FileNewOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) FileNew(ctx context.Context, input FileNewInput, public bool, origin string) (FileNewOutput, error) {
+func (c *DXClient) FileNew(ctx context.Context, input FileNewInput, origin string) (FileNewOutput, error) {
 	// Dnanexus provides file upload URLS differently depending on whether the request if from the platform or not, from a job or not.
 	// In order to allow the client browser to multipart upload file parts directly we must impersonate a browser platform request.
 	headers := map[string]string{}
-	if public {
-		headers["Host"] = c.config.ApiServerHost
+	if origin != "" {
 		headers["Origin"] = origin
 	}
 
 	output := new(FileNewOutput)
-	err := c.DoIntoWithOptions(ctx, "/file/new", input, output, DXClientOptions{
-		PublicApi: public,
-		Headers:   headers,
+	err := c.DoIntoWithOptions(ctx, "/file/new", input, output, DXRequestOptions{
+		Headers: headers,
 	})
 	if err != nil {
 		return FileNewOutput{}, fmt.Errorf("doing request: %w", err)
@@ -77,19 +75,17 @@ type FileUploadOutput struct {
 	Error   *ApiError         `json:"error"`
 }
 
-func (c *DXClient) FileUpload(ctx context.Context, input FileUploadInput, public bool, origin string) (FileUploadOutput, error) {
+func (c *DXClient) FileUpload(ctx context.Context, input FileUploadInput, origin string) (FileUploadOutput, error) {
 	output := new(FileUploadOutput)
 
 	// Dnanexus provides file upload URLS differently depending on whether the request if from the platform or not, from a job or not.
 	// In order to allow the client browser to multipart upload file parts directly we must impersonate a browser platform request.
 	headers := map[string]string{}
-	if public {
-		headers["Host"] = c.config.ApiServerHost
+	if origin != "" {
 		headers["Origin"] = origin
 	}
-	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/upload", input.ID), input, output, DXClientOptions{
-		PublicApi: public,
-		Headers:   headers,
+	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/upload", input.ID), input, output, DXRequestOptions{
+		Headers: headers,
 	})
 	if err != nil {
 		return FileUploadOutput{}, fmt.Errorf("doing request: %w", err)
@@ -106,19 +102,17 @@ type FileCloseOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) FileClose(ctx context.Context, input FileCloseInput, public bool, origin string) (FileCloseOutput, error) {
+func (c *DXClient) FileClose(ctx context.Context, input FileCloseInput, origin string) (FileCloseOutput, error) {
 	output := new(FileCloseOutput)
 
 	// Dnanexus provides file upload URLS differently depending on whether the request if from the platform or not, from a job or not.
 	// In order to allow the client browser to multipart upload file parts directly we must impersonate a browser platform request.
 	headers := map[string]string{}
-	if public {
-		headers["Host"] = c.config.ApiServerHost
+	if origin != "" {
 		headers["Origin"] = origin
 	}
-	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/close", input.ID), input, output, DXClientOptions{
-		PublicApi: public,
-		Headers:   headers,
+	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/close", input.ID), input, output, DXRequestOptions{
+		Headers: headers,
 	})
 	if err != nil {
 		return FileCloseOutput{}, fmt.Errorf("doing request: %w", err)
