@@ -53,7 +53,7 @@ func (c *DXClient) FileNew(ctx context.Context, input FileNewInput, public bool,
 	}
 
 	output := new(FileNewOutput)
-	err := c.DoIntoWithOptions(ctx, "/file/new", input, output, &DXClientOptions{
+	err := c.DoIntoWithOptions(ctx, "/file/new", input, output, DXClientOptions{
 		PublicApi: public,
 		Headers:   headers,
 	})
@@ -87,7 +87,7 @@ func (c *DXClient) FileUpload(ctx context.Context, input FileUploadInput, public
 		headers["Host"] = c.config.ApiServerHost
 		headers["Origin"] = origin
 	}
-	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/upload", input.ID), input, output, &DXClientOptions{
+	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/upload", input.ID), input, output, DXClientOptions{
 		PublicApi: public,
 		Headers:   headers,
 	})
@@ -116,7 +116,7 @@ func (c *DXClient) FileClose(ctx context.Context, input FileCloseInput, public b
 		headers["Host"] = c.config.ApiServerHost
 		headers["Origin"] = origin
 	}
-	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/close", input.ID), input, output, &DXClientOptions{
+	err := c.DoIntoWithOptions(ctx, fmt.Sprintf("/%s/close", input.ID), input, output, DXClientOptions{
 		PublicApi: public,
 		Headers:   headers,
 	})

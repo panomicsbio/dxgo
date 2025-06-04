@@ -60,7 +60,7 @@ func (c *DXClient) getBaseOrigin() string {
 }
 
 func (c *DXClient) DoInto(ctx context.Context, uri string, input any, output any) error {
-	data, err := c.retryableRequest(ctx, uri, input, nil)
+	data, err := c.retryableRequest(ctx, uri, input, DXClientOptions{})
 	if err != nil {
 		return fmt.Errorf("making retryable request: %w", err)
 	}
@@ -80,7 +80,7 @@ type DXClientOptions struct {
 	Headers   map[string]string
 }
 
-func (c *DXClient) DoIntoWithOptions(ctx context.Context, uri string, input any, output any, options *DXClientOptions) error {
+func (c *DXClient) DoIntoWithOptions(ctx context.Context, uri string, input any, output any, options DXClientOptions) error {
 	data, err := c.retryableRequest(ctx, uri, input, options)
 	if err != nil {
 		return fmt.Errorf("making retryable request: %w", err)
@@ -96,7 +96,7 @@ func (c *DXClient) DoIntoWithOptions(ctx context.Context, uri string, input any,
 	return nil
 }
 
-func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any, options *DXClientOptions) ([]byte, error) {
+func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any, options DXClientOptions) ([]byte, error) {
 	var resp []byte
 	err := retry.Do(func() error {
 		var err error
@@ -113,7 +113,7 @@ func (c *DXClient) retryableRequest(ctx context.Context, uri string, input any, 
 	return resp, nil
 }
 
-func (c *DXClient) request(ctx context.Context, uri string, input any, options *DXClientOptions) ([]byte, error) {
+func (c *DXClient) request(ctx context.Context, uri string, input any, options DXClientOptions) ([]byte, error) {
 	postUrl := fmt.Sprintf("%s%s", c.getBaseOrigin(), uri)
 	if options.PublicApi {
 		postUrl = fmt.Sprintf("%s%s", c.config.PublicApiOrigin, uri)
