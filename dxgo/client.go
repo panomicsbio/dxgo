@@ -118,6 +118,7 @@ func (c *DXClient) request(ctx context.Context, uri string, input any, headers m
 	}
 
 	r.Header.Add("Authorization", fmt.Sprintf("%s %s", c.config.DXSecurityContext.AuthTokenType, c.config.DXSecurityContext.AuthToken))
+	r.Header.Add("Content-Type", "application/json")
 	for k, v := range headers {
 		r.Header.Add(k, v)
 	}

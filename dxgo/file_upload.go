@@ -56,7 +56,7 @@ func DoMultipartUpload[T Part](ctx context.Context, c *DXClient, projectId, fold
 		Parent:  true,
 		Name:    objectName,
 		Media:   mediaType,
-	}, false)
+	}, false, "")
 	if err != nil {
 		return fmt.Errorf("file new-ing: %w", err)
 	}
@@ -90,7 +90,7 @@ func DoMultipartUpload[T Part](ctx context.Context, c *DXClient, projectId, fold
 			Size:  n,
 			MD5:   md5,
 			Index: int(part.PartNumber()),
-		}, false)
+		}, false, "")
 		if err != nil {
 			return fmt.Errorf("uploading file: %w", err)
 		}
@@ -132,7 +132,7 @@ func DoMultipartUpload[T Part](ctx context.Context, c *DXClient, projectId, fold
 		}
 	}
 
-	fc, err := c.FileClose(ctx, FileCloseInput{ID: fn.ID}, false)
+	fc, err := c.FileClose(ctx, FileCloseInput{ID: fn.ID}, false, "")
 	if err != nil {
 		return fmt.Errorf("closing file: %w", err)
 	}

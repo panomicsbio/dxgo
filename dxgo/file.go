@@ -43,14 +43,14 @@ type FileNewOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) FileNew(ctx context.Context, input FileNewInput, public bool) (FileNewOutput, error) {
+func (c *DXClient) FileNew(ctx context.Context, input FileNewInput, public bool, origin string) (FileNewOutput, error) {
 	// Dnanexus provides file upload URLS differently depending on whether the request if from the platform or not, from a job or not.
 	// In order to allow the client browser to multipart upload file parts directly we must impersonate a browser platform request.
 	// This is a major hack but the official API does not provide a way to do this.
 	headers := map[string]string{}
 	if public {
-		headers["Host"] = "api.dnanexus.com"
-		headers["Origin"] = "https://platform.dnanexus.com"
+		headers["Host"] = c.config.ApiServerHost
+		headers["Origin"] = origin
 	}
 
 	output := new(FileNewOutput)
@@ -75,7 +75,7 @@ type FileUploadOutput struct {
 	Error   *ApiError         `json:"error"`
 }
 
-func (c *DXClient) FileUpload(ctx context.Context, input FileUploadInput, public bool) (FileUploadOutput, error) {
+func (c *DXClient) FileUpload(ctx context.Context, input FileUploadInput, public bool, origin string) (FileUploadOutput, error) {
 	output := new(FileUploadOutput)
 
 	// Dnanexus provides file upload URLS differently depending on whether the request if from the platform or not, from a job or not.
@@ -83,8 +83,8 @@ func (c *DXClient) FileUpload(ctx context.Context, input FileUploadInput, public
 	// This is a major hack but the official API does not provide a way to do this.
 	headers := map[string]string{}
 	if public {
-		headers["Host"] = "api.dnanexus.com"
-		headers["Origin"] = "https://platform.dnanexus.com"
+		headers["Host"] = c.config.ApiServerHost
+		headers["Origin"] = origin
 	}
 	err := c.DoIntoWithHeaders(ctx, fmt.Sprintf("/%s/upload", input.ID), input, output, headers)
 	if err != nil {
@@ -102,7 +102,7 @@ type FileCloseOutput struct {
 	Error *ApiError `json:"error"`
 }
 
-func (c *DXClient) FileClose(ctx context.Context, input FileCloseInput, public bool) (FileCloseOutput, error) {
+func (c *DXClient) FileClose(ctx context.Context, input FileCloseInput, public bool, origin string) (FileCloseOutput, error) {
 	output := new(FileCloseOutput)
 
 	// Dnanexus provides file upload URLS differently depending on whether the request if from the platform or not, from a job or not.
@@ -110,8 +110,8 @@ func (c *DXClient) FileClose(ctx context.Context, input FileCloseInput, public b
 	// This is a major hack but the official API does not provide a way to do this.
 	headers := map[string]string{}
 	if public {
-		headers["Host"] = "api.dnanexus.com"
-		headers["Origin"] = "https://platform.dnanexus.com"
+		headers["Host"] = c.config.ApiServerHost
+		headers["Origin"] = origin
 	}
 	err := c.DoIntoWithHeaders(ctx, fmt.Sprintf("/%s/close", input.ID), input, output, headers)
 	if err != nil {
