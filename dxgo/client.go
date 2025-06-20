@@ -16,6 +16,11 @@ import (
 	"github.com/avast/retry-go/v4"
 )
 
+// APIResponse represents a generic API response that can contain either data or an error
+type APIResponse struct {
+	Error *ApiError `json:"error,omitempty"`
+}
+
 type DXSecurityContext struct {
 	AuthToken     string `json:"auth_token"`
 	AuthTokenType string `json:"auth_token_type"`
@@ -149,6 +154,13 @@ func (c *DXClient) request(ctx context.Context, uri string, input any, options D
 	if err != nil {
 		return nil, fmt.Errorf("reading response body: %w", err)
 	}
+
+	// Check if the response contains an API error
+	var apiResp APIResponse
+	if err := json.Unmarshal(resp, &apiResp); err == nil && apiResp.Error != nil {
+		return nil, fmt.Errorf("API error: %w", apiResp.Error)
+	}
+
 	return resp, nil
 }
 
