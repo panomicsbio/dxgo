@@ -14,12 +14,8 @@ import (
 	"time"
 
 	"github.com/avast/retry-go/v4"
+	"github.com/tidwall/gjson"
 )
-
-// APIResponse represents a generic API response that can contain either data or an error
-type APIResponse struct {
-	Error *ApiError `json:"error,omitempty"`
-}
 
 type DXSecurityContext struct {
 	AuthToken     string `json:"auth_token"`
@@ -155,10 +151,19 @@ func (c *DXClient) request(ctx context.Context, uri string, input any, options D
 		return nil, fmt.Errorf("reading response body: %w", err)
 	}
 
-	// Check if the response contains an API error
-	var apiResp APIResponse
-	if err := json.Unmarshal(resp, &apiResp); err == nil && apiResp.Error != nil {
-		return nil, fmt.Errorf("API error: %w", apiResp.Error)
+	// Check if the response contains an API error using gjson
+	if errorResult := gjson.GetBytes(resp, "error"); errorResult.Exists() {
+		// Extract error details
+		errorType := gjson.GetBytes(resp, "error.type").String()
+		errorMessage := gjson.GetBytes(resp, "error.message").String()
+		
+		// Create and return ApiError
+		apiError := &ApiError{
+			Type:    errorType,
+			Message: errorMessage,
+			Details: errorResult.Get("details").Value(),
+		}
+		return nil, fmt.Errorf("API error: %w", apiError)
 	}
 
 	return resp, nil
