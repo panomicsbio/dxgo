@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/avast/retry-go/v4"
+	"github.com/tidwall/gjson"
 )
 
 type DXSecurityContext struct {
@@ -149,6 +150,22 @@ func (c *DXClient) request(ctx context.Context, uri string, input any, options D
 	if err != nil {
 		return nil, fmt.Errorf("reading response body: %w", err)
 	}
+
+	// Check if the response contains an API error using gjson
+	if errorResult := gjson.GetBytes(resp, "error"); errorResult.Exists() {
+		// Extract error details
+		errorType := gjson.GetBytes(resp, "error.type").String()
+		errorMessage := gjson.GetBytes(resp, "error.message").String()
+		
+		// Create and return ApiError
+		apiError := &ApiError{
+			Type:    errorType,
+			Message: errorMessage,
+			Details: errorResult.Get("details").Value(),
+		}
+		return nil, fmt.Errorf("API error: %w", apiError)
+	}
+
 	return resp, nil
 }
 
